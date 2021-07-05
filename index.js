@@ -10,20 +10,16 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
+const { isLoggedIn } = require('./middleware')
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
-app.use(flash());
 app.use(mongoSanitize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-
-
-
-
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
@@ -42,6 +38,15 @@ app.use(
     },
   })
 );
+
+app.use(flash());
+
+
+app.use((req, res, next) => {
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+});
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -73,6 +78,7 @@ app.post('/user/register', async (req, res) => {
     const { username,email, password} = req.body;
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
+    req.flash('success', 'Successfully registered!');
     res.redirect('/');
   } catch (e) {
     console.log(e);
@@ -82,10 +88,16 @@ app.post('/user/register', async (req, res) => {
 
 app.get('/user/login', (req,res) => {
   res.render('login.ejs');
+
+
 })
 
-app.post('/user/login', passport.authenticate('local', { failureRedirect:'/user/login'}), (req, res) => {
-  console.log('welcome');
+app.get('/newpost', isLoggedIn, (req, res) => {
+  res.render('newPost.ejs');
+})
+
+app.post('/user/login', passport.authenticate('local', { failureFlash: true, failureRedirect:'/user/login'}), (req, res) => {
+  req.flash('success', 'Successfully logged in!');
   res.redirect('/');
 })
 
@@ -93,6 +105,14 @@ app.post('/user/login', passport.authenticate('local', { failureRedirect:'/user/
 app.get('/user/createprofile', (req,res) => {
   res.render('createProfile.ejs')
 })
+
+app.get('/logout', (req,res) => {
+  req.logout();
+  req.flash('success', 'Goodbye!');
+  res.redirect('/')
+})
+
+
 
 
 
