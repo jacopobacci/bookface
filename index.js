@@ -51,4 +51,8 @@ app.get('/', (req, res) => {
   res.render('home.ejs');
 });
 
+app.get('/user/login', (req,res) => {
+  res.render('login.ejs');
+})
+
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
