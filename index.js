@@ -52,6 +52,11 @@ app.get('/', (req, res) => {
 });
 
 
+app.get('/user/register', (req, res) => {
+  res.render('register.ejs');
+});
+
+
 app.get('/user/login', (req,res) => {
   res.render('login.ejs');
 })
