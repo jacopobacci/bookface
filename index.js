@@ -6,9 +6,7 @@ const flash = require('connect-flash');
 const mongoSanitize = require('express-mongo-sanitize');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-const axios = require('axios');
 const mongoose = require('mongoose');
-const date = new Date().getFullYear();
 
 const app = express();
 
@@ -19,7 +17,7 @@ app.use(flash());
 app.use(mongoSanitize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-// const User = require('../models/user');
+const User = require('./models/user');
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/plants-life';
 const secret = process.env.SECRET || 'team-four';
