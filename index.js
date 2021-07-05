@@ -64,16 +64,29 @@ app.get('/', (req, res) => {
   res.render('home.ejs');
 });
 
-
-
 app.get('/user/register', (req, res) => {
   res.render('register.ejs');
 });
 
-
+app.post('/user/register', async (req, res) => {
+  try {
+    const { username,email, password} = req.body;
+    const user = new User ({ username, email });
+    const registeredUser = await User.register(user, password);
+    res.redirect('/');
+  } catch (e) {
+    console.log(e);
+    res.redirect('/user/register');
+  }
+});
 
 app.get('/user/login', (req,res) => {
   res.render('login.ejs');
+})
+
+app.post('/user/login', passport.authenticate('local', { failureRedirect:'/user/login'}), (req, res) => {
+  console.log('welcome');
+  res.redirect('/');
 })
 
 
