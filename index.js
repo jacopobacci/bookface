@@ -7,6 +7,9 @@ const mongoSanitize = require('express-mongo-sanitize');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
+const User = require('./models/user');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 const app = express();
 
@@ -17,7 +20,10 @@ app.use(flash());
 app.use(mongoSanitize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-const User = require('./models/user');
+
+
+
+
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
@@ -37,8 +43,15 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 mongoose
-  .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true  })
   .then(() => {
     console.log('Database connected!');
   })
@@ -51,10 +64,8 @@ app.get('/', (req, res) => {
   res.render('home.ejs');
 });
 
-
 app.get('/user/login', (req,res) => {
   res.render('login.ejs');
 })
-
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
