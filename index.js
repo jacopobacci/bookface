@@ -61,5 +61,10 @@ app.get('/user/login', (req,res) => {
   res.render('login.ejs');
 })
 
+app.get('/user/createProfile', (req,res) => {
+  res.render('createProfile.ejs')
+})
+
+
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
