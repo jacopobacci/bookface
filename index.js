@@ -19,7 +19,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 const User = require('./models/user');
 
-const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/plants-life';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
 
 app.use(
