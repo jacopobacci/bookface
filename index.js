@@ -8,6 +8,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const User = require('./models/user');
+const Post = require('./models/post');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { isLoggedIn } = require('./middleware')
@@ -110,6 +111,17 @@ app.get('/logout', (req,res) => {
   req.logout();
   req.flash('success', 'Goodbye!');
   res.redirect('/')
+})
+
+app.get('/posts', async (req, res)=> {
+  const posts = await Post.find({})
+  res.render('posts.ejs', {posts})
+})
+app.post('/posts', isLoggedIn, async (req, res) => {
+  // const{content} = req.body;
+  const newPost = new Post(req.body)
+  await newPost.save()
+  res.redirect('/posts')
 })
 
 

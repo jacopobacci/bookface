@@ -1,0 +1,17 @@
+<%- include("partials/navbar.ejs") %>
+
+    <div class="container min-vh-100">
+      <%- include("partials/flash.ejs") %>
+      <div class="d-flex justify-content-center align-items-center min-vh-100 flex-column">
+        <h1>All Posts</h1>
+        <% posts.forEach(post => { %>
+            <p class="p-3 mb-3 border rounded"><%= post.content %></p>
+            <form action="/posts" method="POST">
+                <input type="checkbox" class="btn-check" id="isLiked" autocomplete="off" name="isLiked">
+                <label class="btn btn-outline-primary" for="isLiked">Like</label>
+            </form>
+        <% }) %>
+    </div>
+
+<%- include("partials/footer.ejs") %> <%- include("partials/scripts.ejs") %>
+
