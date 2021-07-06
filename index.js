@@ -9,10 +9,9 @@ const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const Post = require('./models/post');
-const Profile = require('./models/profile')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const { isLoggedIn } = require('./middleware')
+const { isLoggedIn, isAuthor } = require('./middleware')
 
 const app = express();
 
@@ -60,15 +59,18 @@ app.use((req, res, next) => {
   next();
 })
 
-mongoose
-  .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true  })
-  .then(() => {
-    console.log('Database connected!');
-  })
-  .catch((err) => {
-    console.log('Database connection error!');
-    console.log(err);
-  });
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+});
+
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "Connection error:"));
+db.once("open", () => {
+    console.log("Database connected");
+});
 
 app.get('/', (req, res) => {
   res.render('home.ejs');
@@ -85,8 +87,14 @@ app.post('/user/register', async (req, res) => {
     const { username,email, password} = req.body;
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
-    req.flash('success', 'Successfully registered!');
-    res.redirect('/');
+    req.login(registeredUser, e => {
+      if(e) {
+        console.log(e)
+      } else {
+        req.flash('success', 'Successfully registered!');
+        res.redirect('/posts');
+      }
+    })
   } catch (e) {
     console.log(e);
     req.flash('error', 'Registration error, try again!')
@@ -107,15 +115,15 @@ app.get('/newpost', isLoggedIn, (req, res) => {
 app.post('/user/login', passport.authenticate('local', { failureFlash: true, failureRedirect:'/user/login'}), (req, res) => {
   try {
     req.flash('success', 'Successfully logged in!');
-    res.redirect('/');
+    const redirectUrl = req.session.returnTo || '/';
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
   } catch {
     req.flash('error', 'Login process error, try again!')
   }
 })
 
 // Logout
-
-
 
 app.get('/logout', (req,res) => {
   req.logout();
@@ -160,7 +168,8 @@ app.get('/updatepost/:id', async (req, res)=> {
     console.log(e)
   }
 })
-app.put('/updatepost/:id', async (req, res) => {
+
+app.put('/updatepost/:id', isLoggedIn, isAuthor, async (req, res) => {
   try {
     const {id} = req.params
     await Post.findByIdAndUpdate(id, req.body)
@@ -174,7 +183,7 @@ app.put('/updatepost/:id', async (req, res) => {
 
 //Deleting posts
 
-app.delete('/:id', async (req, res) => {
+app.delete('/:id', isLoggedIn, isAuthor, async (req, res) => {
   try {
     const {id} = req.params
     await Post.findByIdAndDelete(id)
@@ -186,37 +195,6 @@ app.delete('/:id', async (req, res) => {
   }
 })
 
-//Profile creation
 
-app.get('/user/createprofile', (req,res) => {
-  res.render('createProfile.ejs')
-})
-app.post('/user/profile', async (req, res) => {
-  try {
-    const newProfile = new Profile(req.body);
-    newProfile.author = req.user._id;
-    await newProfile.save();
-    req.flash('success', 'Profile succefully created');
-    
-    res.redirect('/user/profile');
-  } catch (e) {
-    console.log(e)
-  }
-})
-
-//Show Profile
-
-app.get('/user/profile', async (req, res) => {
-  const profile = await Profile.findOne({}).populate('author')
-  if (profile) {
-    req.flash('error', 'Profile already exist')
-    res.redirect('/posts')
-  }else {
-    res.render('showProfile.ejs', {profile})
-  }
-  console.log(profile)
-  res.render('showProfile.ejs', {profile})
-
-})
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
