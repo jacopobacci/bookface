@@ -9,6 +9,7 @@ const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const Post = require('./models/post');
+const Profile = require('./models/profile');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { isLoggedIn, isAuthor } = require('./middleware')
@@ -195,6 +196,38 @@ app.delete('/:id', isLoggedIn, isAuthor, async (req, res) => {
   }
 })
 
+
+//Profile creation
+
+app.get('/user/createprofile', (req,res) => {
+  res.render('createProfile.ejs')
+})
+
+app.post('/user/profile', async (req, res) => {
+  try {
+    const newProfile = new Profile(req.body);
+    newProfile.author = req.user._id;
+    await newProfile.save();
+    req.flash('success', 'Profile succefully created');
+    
+    res.redirect('/user/profile');
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+//Show Profile
+
+app.get('/user/profile', async (req, res) => {
+  // move the if else to app.post(user/profile)
+  const profile = await Profile.findOne({}).populate('author')
+  if (profile) {
+    req.flash('error', 'Personal profile already created!')
+    res.redirect('/posts')
+  }else {
+    res.render('showProfile.ejs', { profile })
+  }
+})
 
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
