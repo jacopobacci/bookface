@@ -10,6 +10,10 @@
                 <input type="checkbox" class="btn-check" id="isLiked" autocomplete="off" name="isLiked">
                 <label class="btn btn-outline-primary" for="isLiked">Like</label>
             </form>
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-primary">Update</a>
+                <form action="/<%= post.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-primary">Delete</button></form>
+              </div>
         <% }) %>
     </div>
 
