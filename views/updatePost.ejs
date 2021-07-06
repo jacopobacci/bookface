@@ -1,15 +1,16 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100">
-      <div class="d-flex justify-content-center align-items-center min-vh-100 flex-column">
-        <h1>Update Post</h1>
-        <form action="/updatepost/<%= post.id %>?_method=PUT" method="POST">
+    <div class="container min-vh-100 shadow p-3 mb-5 bg-body rounded">
+      <div class="d-flex justify-content-start align-items-center min-vh-100 flex-column p-5">
+        <h1 class="h4 text-muted">Update Post</h1>
+        <form action="/updatepost/<%= post.id %>?_method=PUT" method="POST" class="w-75">
           <div class="mb-3">
-            <textarea class="form-control" placeholder="Write a new post." id="content" style="height: 100px" name="content"><%= post.content %></textarea>
+            <textarea class="form-control mt-5 w-100 h-50" placeholder="Write a new post." id="content" name="content"><%= post.content %></textarea>
             <label for="content"></label>
           </div> 
           <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+      </div>
     </div>
 
 <%- include("partials/footer.ejs") %>

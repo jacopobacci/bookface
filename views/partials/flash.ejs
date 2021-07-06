@@ -1,5 +1,5 @@
 <% if(success && success.length) { %>
-    <div class="d-md-flex justify-content-center">
+    <div class="d-flex justify-content-center align-items-center w-100 mt-2 mb-5">
       <div class="alert success-msg alert-success alert-dismissible fade show col-md-6 mb-0" role="alert">
         <%= success %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -7,7 +7,7 @@
     </div>
     
     <% } %> <% if(error && error.length) { %>
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center align-items-center w-100 mt-2 mb-5">
       <div class="alert error-msg alert-danger alert-dismissible fade show" role="alert">
         <%= error %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

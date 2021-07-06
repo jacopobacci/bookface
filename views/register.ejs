@@ -1,16 +1,16 @@
 <%- include("partials/navbar.ejs") %>
 
-<div class="container min-vh-100">
-  <form action='/user/register' method='POST' class="row g-3">
-    <div class="col-md-6">
+<div class="container min-vh-100 d-flex justify-content-center flex-column w-75 p-3">
+  <form action='/user/register' method='POST' class="row g-3 shadow-lg p-3 mb-5 bg-body rounded p-5">
+    <div class="col-md-6 w-100">
         <label for="username" class="form-label">Username</label>
         <input type=text" class="form-control" id="username" name='username'>
       </div>
-    <div class="col-md-6">
+    <div class="col-md-6 w-100">
       <label for="email" class="form-label">Email</label>
       <input type="email" class="form-control" id="email" name='email'>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 w-100">
       <label for="password" class="form-label">Password</label>
       <input type="password" class="form-control" id="password" name='password'>
     </div>
