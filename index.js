@@ -117,16 +117,12 @@ app.get('/posts', async (req, res)=> {
   const posts = await Post.find({})
   res.render('posts.ejs', {posts})
 })
+
 app.post('/posts', isLoggedIn, async (req, res) => {
-  // const{content} = req.body;
   const newPost = new Post(req.body)
   await newPost.save()
   res.redirect('/posts')
 })
-
-
-
-
 
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
