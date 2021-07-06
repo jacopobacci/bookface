@@ -129,7 +129,7 @@ app.post('/posts', isLoggedIn, async (req, res) => {
   try {
     const newPost = new Post(req.body)
     await newPost.save()
-    req.flash('success', 'Post successfully created')
+    req.flash('success', 'Post succefully created')
     res.redirect('/posts')
   } catch (e) {
     req.flash('error', e);
