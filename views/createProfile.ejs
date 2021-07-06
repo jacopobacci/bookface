@@ -1,13 +1,13 @@
 <%- include("partials/navbar.ejs") %>
 <div class="container min-vh-100">
-    <form>
+    <form action="/user/profile" method="POST">
         <div class="mb-3">
-          <label for="first-name" class="form-label">First Name</label>
-          <input type="text" class="form-control" id="first-name" name="first-name">
+          <label for="firstName" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="firstName" name="firstName">
         </div>
         <div class="mb-3">
-            <label for="last-name" class="form-label">Last Name</label>
-            <input type="text" class="form-control" id="last-name" name="last-name">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="lastName" name="lastName">
           </div>
           <div class="mb-3">
             <label for="phone" class="form-label">Phone</label>

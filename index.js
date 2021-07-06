@@ -9,6 +9,7 @@ const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const Post = require('./models/post');
+const Profile = require('./models/profile')
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const { isLoggedIn } = require('./middleware')
@@ -112,11 +113,9 @@ app.post('/user/login', passport.authenticate('local', { failureFlash: true, fai
   }
 })
 
-// Create profile and logout
+// Logout
 
-app.get('/user/createprofile', (req,res) => {
-  res.render('createProfile.ejs')
-})
+
 
 app.get('/logout', (req,res) => {
   req.logout();
@@ -135,7 +134,7 @@ app.get('/posts', async (req, res)=> {
 // Creating post
 
 app.post('/posts', isLoggedIn, async (req, res, next) => {
-  console.log(req.user)
+ 
   try {
     const newPost = new Post(req.body);
     newPost.author = req.user._id;
@@ -185,6 +184,39 @@ app.delete('/:id', async (req, res) => {
   catch (e) {
     console.log(e)
   }
+})
+
+//Profile creation
+
+app.get('/user/createprofile', (req,res) => {
+  res.render('createProfile.ejs')
+})
+app.post('/user/profile', async (req, res) => {
+  try {
+    const newProfile = new Profile(req.body);
+    newProfile.author = req.user._id;
+    await newProfile.save();
+    req.flash('success', 'Profile succefully created');
+    
+    res.redirect('/user/profile');
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+//Show Profile
+
+app.get('/user/profile', async (req, res) => {
+  const profile = await Profile.findOne({}).populate('author')
+  if (profile) {
+    req.flash('error', 'Profile already exist')
+    res.redirect('/posts')
+  }else {
+    res.render('showProfile.ejs', {profile})
+  }
+  console.log(profile)
+  res.render('showProfile.ejs', {profile})
+
 })
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
