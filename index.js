@@ -66,7 +66,7 @@ mongoose
 app.get('/', (req, res) => {
   res.render('home.ejs');
 });
-
+//Register 
 app.get('/user/register', (req, res) => {
   res.render('register.ejs');
 });
@@ -85,6 +85,8 @@ app.post('/user/register', async (req, res) => {
   }
 });
 
+//Login
+
 app.get('/user/login', (req,res) => {
   res.render('login.ejs');
 })
@@ -102,6 +104,7 @@ app.post('/user/login', passport.authenticate('local', { failureFlash: true, fai
   }
 })
 
+// Create profile and logout
 
 app.get('/user/createprofile', (req,res) => {
   res.render('createProfile.ejs')
@@ -113,21 +116,64 @@ app.get('/logout', (req,res) => {
   res.redirect('/')
 })
 
+// Reading posts
+
 app.get('/posts', async (req, res)=> {
   const posts = await Post.find({})
   res.render('posts.ejs', {posts})
 })
 
+// Creating post
+
 app.post('/posts', isLoggedIn, async (req, res) => {
   try {
     const newPost = new Post(req.body)
     await newPost.save()
+    req.flash('success', 'Post succefully created')
     res.redirect('/posts')
   } catch (e) {
     req.flash('error', e);
   }
  
 })
+// Updating posts
 
+app.get('/updatepost/:id', async (req, res)=> {
+  try{
+    const {id} = req.params
+    console.log(req.params)
+    const post = await Post.findById(id)
+    res.render('updatePost.ejs', {post})
+
+  }
+  catch (e) {
+    console.log(e)
+  }
+})
+app.put('/updatepost/:id', async (req, res) => {
+  try {
+    const {id} = req.params
+    await Post.findByIdAndUpdate(id, req.body)
+    req.flash('success', 'Post successfully updated')
+    res.redirect('/posts')
+  }
+  catch(e) {
+    console.log(e)
+  }
+})
+
+//Deleting posts
+
+app.delete('/:id', async (req, res) => {
+  try {
+    const {id} = req.params
+    await Post.findByIdAndDelete(id)
+    req.flash('success', 'Post successfully deleted')
+    res.redirect('/posts')
+  }
+  catch (e) {
+    console.log(e)
+  }
+})
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
