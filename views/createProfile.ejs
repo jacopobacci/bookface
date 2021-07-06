@@ -1,56 +1,39 @@
 <%- include("partials/navbar.ejs") %>
 <div class="container min-vh-100">
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Full Name</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="text" class="form-control" value="John Doe">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Email</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="text" class="form-control" value="john@example.com">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Phone</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="text" class="form-control" value="(239) 816-9029">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Mobile</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="text" class="form-control" value="(320) 380-4539">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Address</h6>
-                    </div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="text" class="form-control" value="Bay Area, San Francisco, CA">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-3"></div>
-                    <div class="col-sm-9 text-secondary">
-                        <input type="button" class="btn btn-primary px-4" value="Save Changes">
-                    </div>
-                </div>
-            </div>
+    <form>
+        <div class="mb-3">
+          <label for="first-name" class="form-label">First Name</label>
+          <input type="text" class="form-control" id="first-name" name="first-name">
         </div>
+        <div class="mb-3">
+            <label for="last-name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="last-name" name="last-name">
+          </div>
+          <div class="mb-3">
+            <label for="phone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="phone" name="phone">
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address">
+          </div>
+          <div class="mb-3">
+            <label for="birthday" class="form-label">Birthday</label>
+            <input type="text" class="form-control" id="birthday" name="birthday">
+          </div>
+          <div class="mb-3">
+            <label for="hobbies">Hobbies</label>
+            <textarea class="form-control" placeholder="Write your hobbies here" id="hobbies" name="hobbies"></textarea>
+          </div>
+          <!-- <div class="mb-3">
+            <label for="hobbies" class="form-label">Hobbies</label>
+            <input type="image" class="form-control" id="hobbies" name="hobbies">
+          </div> -->
+
+        
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
 </div>
     
   
