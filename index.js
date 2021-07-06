@@ -41,14 +41,11 @@ app.use(
 );
 
 app.use(flash());
-
-
 app.use((req, res, next) => {
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
 });
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -83,14 +80,13 @@ app.post('/user/register', async (req, res) => {
     res.redirect('/');
   } catch (e) {
     console.log(e);
+    req.flash('error', 'Registration error, try again!')
     res.redirect('/user/register');
   }
 });
 
 app.get('/user/login', (req,res) => {
   res.render('login.ejs');
-
-
 })
 
 app.get('/newpost', isLoggedIn, (req, res) => {
@@ -98,8 +94,12 @@ app.get('/newpost', isLoggedIn, (req, res) => {
 })
 
 app.post('/user/login', passport.authenticate('local', { failureFlash: true, failureRedirect:'/user/login'}), (req, res) => {
-  req.flash('success', 'Successfully logged in!');
-  res.redirect('/');
+  try {
+    req.flash('success', 'Successfully logged in!');
+    res.redirect('/');
+  } catch {
+    req.flash('error', 'Login process error, try again!')
+  }
 })
 
 
@@ -119,9 +119,14 @@ app.get('/posts', async (req, res)=> {
 })
 
 app.post('/posts', isLoggedIn, async (req, res) => {
-  const newPost = new Post(req.body)
-  await newPost.save()
-  res.redirect('/posts')
+  try {
+    const newPost = new Post(req.body)
+    await newPost.save()
+    res.redirect('/posts')
+  } catch (e) {
+    req.flash('error', e);
+  }
+ 
 })
 
 

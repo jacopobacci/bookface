@@ -1,10 +1,8 @@
-
-
-
   <%- include("partials/navbar.ejs") %>
 
   <div class="container min-vh-100">
     <h1>Login</h1>
+    <%- include("partials/flash.ejs") %>
     <form action='/user/login' method='POST'>
       <div class="mb-3">
         <label class="form-label" for="username">Username</label>

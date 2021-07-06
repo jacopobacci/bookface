@@ -6,7 +6,7 @@
   "scripts": {
     "start": "run-p server watch:*",
     "server": "nodemon index.js",
-    "watch:css": "sass public/stylesheets/style.scss public/stylesheets/style.css --watch",
+    "watch:css": "sass public/styles/style.scss public/styles/style.css --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
