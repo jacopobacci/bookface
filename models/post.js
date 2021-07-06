@@ -7,6 +7,10 @@ const postSchema = new Schema({
   },
   isLiked: {
       type: Boolean
+  },
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 

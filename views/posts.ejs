@@ -6,14 +6,17 @@
         <h1>All Posts</h1>
         <% posts.forEach(post => { %>
             <p class="p-3 mb-3 border rounded"><%= post.content %></p>
+            <span class="p-3">Created By  <%= post.author.username %><span/>
             <form action="/posts" method="POST">
                 <input type="checkbox" class="btn-check" id="isLiked" autocomplete="off" name="isLiked">
                 <label class="btn btn-outline-primary" for="isLiked">Like</label>
             </form>
+            <% if(currentUser && post.author.equals(currentUser._id)) { %> 
             <div class="btn-group" role="group" aria-label="Basic example">
                 <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-primary">Update</a>
                 <form action="/<%= post.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-primary">Delete</button></form>
               </div>
+            <% } %> 
         <% }) %>
     </div>
 

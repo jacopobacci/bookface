@@ -40,18 +40,24 @@ app.use(
   })
 );
 
-app.use(flash());
-app.use((req, res, next) => {
-  res.locals.success = req.flash('success');
-  res.locals.error = req.flash('error');
-  next();
-});
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+app.use(flash());
+
+// MIDDLEWARE
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash('success');
+  res.locals.error = req.flash('error');
+  next();
+})
 
 mongoose
   .connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true  })
@@ -66,7 +72,9 @@ mongoose
 app.get('/', (req, res) => {
   res.render('home.ejs');
 });
+
 //Register 
+
 app.get('/user/register', (req, res) => {
   res.render('register.ejs');
 });
@@ -119,18 +127,21 @@ app.get('/logout', (req,res) => {
 // Reading posts
 
 app.get('/posts', async (req, res)=> {
-  const posts = await Post.find({})
-  res.render('posts.ejs', {posts})
+  const posts = await Post.find({}).populate('author');
+ 
+  res.render('posts.ejs', { posts })
 })
 
 // Creating post
 
-app.post('/posts', isLoggedIn, async (req, res) => {
+app.post('/posts', isLoggedIn, async (req, res, next) => {
+  console.log(req.user)
   try {
-    const newPost = new Post(req.body)
-    await newPost.save()
-    req.flash('success', 'Post succefully created')
-    res.redirect('/posts')
+    const newPost = new Post(req.body);
+    newPost.author = req.user._id;
+    await newPost.save();
+    req.flash('success', 'Post succefully created');
+    res.redirect('/posts');
   } catch (e) {
     req.flash('error', e);
   }
