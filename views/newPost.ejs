@@ -1,13 +1,13 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100 shadow p-3 mb-5 bg-body rounded bg-light">
+    <div class="container min-vh-100 shadow p-3 mb-5 bg-transparent rounded bg-light">
       <div class="d-flex justify-content-start align-items-center min-vh-100 flex-column p-5">
-        <h1 class="h4 text-muted">Create New Post</h1>
+        <h1 class="h4 badge bg-light text-dark" style="font-size: 35px">Create New Post</h1>
         <form action="/posts" method="POST" class="w-75">
           <div class="mb-3">
-            <textarea class="form-control mt-5 w-100 h-50" placeholder="Write a new post." id="content" name="content"></textarea>
+            <textarea class="form-control mt-5 w-100 h-50" placeholder="Write a new post." id="content" name="content" style="border-radius: 10px"></textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-success">Submit</button>
         </form>
       </div>
     </div>
