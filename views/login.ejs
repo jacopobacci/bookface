@@ -1,19 +1,23 @@
   <%- include("partials/navbar.ejs") %>
 
-  <div class="d-flex justify-content-center align-items-center flex-column p-3">
+  <div class="d-flex align-items-center flex-column">
     <%- include("partials/flash.ejs") %>
-      <h1 class="h4 text-center badge bg-light text-dark" style="font-size: 35px">Login</h1>
-      <form action='/user/login' method='POST' class="shadow-lg p-3 mb-5 bg-body p-5 mt-5 w-75" style="border-radius: 20px">
-        <div class="mb-3">
-          <label class="form-label" for="username">Username</label>
-          <input class="form-control" type="text" id="username" name="username" required>
+      <h1 class="bg-light text-dark p-4 rounded-pill mb-5">Login</h1>
+        <div class="card col-12 col-lg-4">
+          <div class="card-body">
+            <form action='/user/login' method='POST' style="border-radius: 20px">
+              <div class="mb-3">
+                <label class="form-label" for="username">Username</label>
+                <input class="form-control" type="text" id="username" name="username" required>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name='password'>
+              </div>
+              <button type="submit" class="btn btn btn-outline-success rounded rounded-3">Go</button>
+            </form>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input type="password" class="form-control" id="password" name='password'>
-        </div>
-        <button type="submit" class="btn btn btn-success rounded rounded-3">Submit</button>
-      </form>
   </div>
 
 <%- include("partials/footer.ejs") %> 

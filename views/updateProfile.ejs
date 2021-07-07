@@ -1,36 +1,49 @@
 <%- include("partials/navbar.ejs") %>
 
 
-      <div class="d-flex justify-content-center align-items-center min-vh-100 flex-column">
-        <h1>Update Profile</h1>
+   
 
-        <form action="/updateprofile/<%= profile.id %>?_method=PUT" method="POST">
-                <div class="mb-3">
-                  <label for="firstName" class="form-label">First Name</label>
-                  <input type="text" class="form-control" id="firstName" name="firstName" value='<%= profile.firstName %>'>
-                </div>
-                <div class="mb-3">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName" value='<%= profile.lastName %>'>
+        
+
+
+        <div class="d-flex min-vh-100 flex-column justify-content-center align-items-center">
+          <h1 class="bg-light text-dark p-4 rounded-pill mb-5">Update Profile</h1>
+          <div class="col-md-6 col-12">
+            <div class="card">
+              <div class="card-body">
+                <form action="/updateprofile/<%= profile.id %>?_method=PUT" method="POST">
+                  <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" value='<%= profile.firstName %>'>
                   </div>
                   <div class="mb-3">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="phone" name="phone" value='<%= profile.phone %>'>
-                  </div>
-                  <div class="mb-3">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" value='<%= profile.address %>'>
-                  </div>
-                  <div class="mb-3">
-                    <label for="birthday" class="form-label">Birthday</label>
-                    <input type="text" class="form-control" id="birthday" name="birthday" value='<%= profile.birthday %>'>
-                  </div>
-                  <div class="mb-3">
-                    <label for="hobbies">Hobbies</label>
-                    <textarea class="form-control" placeholder="Write your hobbies here" id="hobbies" name="hobbies"><%= profile.hobbies %></textarea>
-                  </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+                      <label for="lastName" class="form-label">Last Name</label>
+                      <input type="text" class="form-control" id="lastName" name="lastName" value='<%= profile.lastName %>'>
+                    </div>
+                    <div class="mb-3">
+                      <label for="phone" class="form-label">Phone</label>
+                      <input type="text" class="form-control" id="phone" name="phone" value='<%= profile.phone %>'>
+                    </div>
+                    <div class="mb-3">
+                      <label for="address" class="form-label">Address</label>
+                      <input type="text" class="form-control" id="address" name="address" value='<%= profile.address %>'>
+                    </div>
+                    <div class="mb-3">
+                      <label for="birthday" class="form-label">Birthday</label>
+                      <input type="text" class="form-control" id="birthday" name="birthday" value='<%= profile.birthday %>'>
+                    </div>
+                    <div class="mb-3">
+                      <label for="hobbies">Hobbies</label>
+                      <textarea class="form-control" placeholder="Write your hobbies here" id="hobbies" name="hobbies"><%= profile.hobbies %></textarea>
+                    </div>
+                  <button type="submit" class="btn btn-outline-primary">Update</button>
+          </form>
+              </div>
+              
+            </div>
+            
+          </div>
+          </div>
 
 
 <%- include("partials/footer.ejs") %>

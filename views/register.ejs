@@ -1,23 +1,32 @@
 <%- include("partials/navbar.ejs") %>
 
-<div class="d-flex justify-content-center flex-column w-75 p-3">
-  <form action='/user/register' method='POST' class="row g-3 shadow-lg p-3 mb-5 bg-body p-5" style="border-radius: 20px">
-    <div class="col-md-6 w-100">
-        <label for="username" class="form-label">Username</label>
-        <input type=text" class="form-control" id="username" name='username'>
-      </div>
-    <div class="col-md-6 w-100">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" class="form-control" id="email" name='email'>
+<div class="d-flex align-items-center flex-column">
+  <%- include("partials/flash.ejs") %>
+  <h1 class="bg-light text-dark p-4 rounded-pill mb-5">Register</h1>
+  <div class="card col-12 col-lg-4">
+    <div class="card-body">
+      <form action='/user/register' method='POST'>
+        <div>
+            <label for="username" class="form-label">Username</label>
+            <input type=text" class="form-control" id="username" name='username'>
+          </div>
+        <div>
+          <label for="email" class="form-label">Email</label>
+          <input type="email" class="form-control" id="email" name='email'>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" class="form-control" id="password" name='password'>
+        </div>
+          <button type="submit" class="btn btn-success rounded rounded-3">Sign up</button>
+      </form>
     </div>
-    <div class="col-md-6 w-100">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" name='password'>
-    </div>
-    <div class="col-12">
-      <button type="submit" class="btn btn-success rounded rounded-3">Sign up</button>
-    </div>
-  </form>
+  </div>
+
+  
 </div>
+
+
+
 
 <%- include("partials/footer.ejs") %>
