@@ -200,7 +200,7 @@ app.get('/user/createprofile', (req,res) => {
   res.render('createProfile.ejs')
 })
 
-app.post('/user/profile', isLoggedIn, async (req, res) => {
+app.post('/profiles', isLoggedIn, async (req, res) => {
   try {
     const user = await User.find({hasProfile: false})
     console.log(user)
@@ -210,10 +210,10 @@ app.post('/user/profile', isLoggedIn, async (req, res) => {
       await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
       await newProfile.save();
       req.flash('success', 'Profile succefully created');
-      res.redirect('/user/profile');
+      res.redirect('/profiles');
     } else {
       req.flash('error', 'Personal profile already created!')
-      res.redirect('/user/profile');
+      res.redirect('/profiles');
     }
   } catch (e) {
     console.log(e)
@@ -222,9 +222,9 @@ app.post('/user/profile', isLoggedIn, async (req, res) => {
 
 //Show Profile
 
-app.get('/user/profile', async (req, res) => {
+app.get('/profiles', async (req, res) => {
   const profiles = await Profile.find({}).populate('author')
-  res.render('showProfile.ejs', { profiles });
+  res.render('showProfiles.ejs', { profiles });
 })
 
 // update profile
@@ -245,7 +245,7 @@ app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
     const { id } = req.params
     await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
     req.flash('success', 'Profile successfully updated')
-    res.redirect('/user/profile')
+    res.redirect('/profiles')
   }
   catch(e) {
     console.log(e)
