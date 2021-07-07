@@ -1,23 +1,26 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100">
+    <div class="container min-vh-100 d-flex align-items-center flex-column shadow p-3 mb-5 bg-body rounded">
       <%- include("partials/flash.ejs") %>
-      <div class="d-flex justify-content-center align-items-center min-vh-100 flex-column">
-        <h1>All Posts</h1>
+      <div class="w-75">
+        <h1 class="h4 text-muted text-center mt-5">All Posts</h1>
         <% posts.forEach(post => { %>
-            <p class="p-3 mb-3 border rounded"><%= post.content %></p>
-            <span class="p-3">Created By  <%= post.author.username %><span/>
+            <p class="p-3 mb-3 mt-5 border rounded text-break text-secondary"><%= post.content %></p>
+            <span class="text-primary">Created By  <%= post.author.username %><span/>
+              <div class="d-flex flex-row bd-highlight mb-3 ">
             <form action="/posts" method="POST">
                 <input type="checkbox" class="btn-check" id="isLiked" autocomplete="off" name="isLiked">
-                <label class="btn btn-outline-primary" for="isLiked">Like</label>
+                <label class="btn btn-outline-primary mt-4" for="isLiked">Like</label>
             </form>
             <% if(currentUser && post.author.equals(currentUser._id)) { %> 
-            <div class="btn-group" role="group" aria-label="Basic example">
+              <div class="btn-group mt-4 ms-1" role="group" aria-label="Basic example">
                 <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-primary">Update</a>
-                <form action="/<%= post.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-primary">Delete</button></form>
+                <form action="/<%= post.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-primary ms-1">Delete</button></form>
               </div>
+            </div>
             <% } %> 
         <% }) %>
+      </div>
     </div>
 
 <%- include("partials/footer.ejs") %> 
