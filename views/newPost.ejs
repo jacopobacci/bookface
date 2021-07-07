@@ -1,15 +1,23 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100 shadow p-3 mb-5 bg-transparent rounded bg-light">
-      <div class="d-flex justify-content-start align-items-center min-vh-100 flex-column p-5">
-        <h1 class="h4 badge bg-light text-dark" style="font-size: 35px">Create New Post</h1>
-        <form action="/posts" method="POST" class="w-75">
-          <div class="mb-3">
-            <textarea class="form-control mt-5 w-100 h-50" placeholder="Write a new post." id="content" name="content" style="border-radius: 10px"></textarea>
+
+      <div class="d-flex align-items-center flex-column">
+        <h1 class="bg-light text-dark p-4 rounded-pill mb-5">Create New Post</h1>
+        <div class="col-8">
+          <div class="card">
+            <div class="card-header">
+             My New Post
+            </div>
+            <div class="card-body">
+              <form action="/posts" method="POST">
+                <div class="mb-3">
+                  <textarea class="form-control rounded" placeholder="Write a new post..." id="content" name="content" style="height: 100px"></textarea>
+                </div>
+                <button type="submit" class="btn btn-outline-primary">Submit</button>
+              </form>
+            </div>
           </div>
-          <button type="submit" class="btn btn-success">Submit</button>
-        </form>
+        </div>
       </div>
-    </div>
 
 <%- include("partials/footer.ejs") %>

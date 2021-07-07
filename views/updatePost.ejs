@@ -1,6 +1,6 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100 shadow p-3 mb-5 bg-transparent rounded">
+    <div class="shadow p-3 mb-5 bg-transparent rounded">
       <div class="d-flex justify-content-start align-items-center min-vh-100 flex-column p-5">
         <h1 class="h4 text-dark fw-bold" style="font-weight: 900; font-size: 35px">Update Post</h1>
         <form action="/updatepost/<%= post.id %>?_method=PUT" method="POST" class="w-75">

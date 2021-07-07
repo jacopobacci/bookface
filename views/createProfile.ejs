@@ -1,40 +1,43 @@
 <%- include("partials/navbar.ejs") %>
 
-<div class="container min-vh-100">
+
   <div class="d-flex min-vh-100 flex-column justify-content-center align-items-center">
-    <div class="col-md-8 col-12">
-      <h1 class='mb-3'>Create A Profile</h1>
-      <form action="/profiles" method="POST">
-          <div class="mb-3">
-            <label for="firstName" class="form-label">First Name</label>
-            <input type="text" class="form-control" id="firstName" name="firstName">
-          </div>
-          <div class="mb-3">
-              <label for="lastName" class="form-label">Last Name</label>
-              <input type="text" class="form-control" id="lastName" name="lastName">
+    <h1 class="bg-light text-dark p-4 rounded-pill mb-5">Create A New Profile</h1>
+    <div class="col-md-6 col-12">
+      <div class="card">
+        <div class="card-body">
+          <form action="/profiles" method="POST">
+            <div class="mb-3">
+              <label for="firstName" class="form-label">First Name</label>
+              <input type="text" class="form-control" id="firstName" name="firstName">
             </div>
             <div class="mb-3">
-              <label for="phone" class="form-label">Phone</label>
-              <input type="text" class="form-control" id="phone" name="phone">
-            </div>
-            <div class="mb-3">
-              <label for="address" class="form-label">Address</label>
-              <input type="text" class="form-control" id="address" name="address">
-            </div>
-            <div class="mb-3">
-              <label for="birthday" class="form-label">Birthday</label>
-              <input type="text" class="form-control" id="birthday" name="birthday">
-            </div>
-            <div class="mb-3">
-              <label for="hobbies">Hobbies</label>
-              <textarea class="form-control" placeholder="Write your hobbies here" id="hobbies" name="hobbies"></textarea>
-            </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" name="lastName">
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="phone" name="phone">
+              </div>
+              <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" name="address">
+              </div>
+              <div class="mb-3">
+                <label for="birthday" class="form-label">Birthday</label>
+                <input type="text" class="form-control" id="birthday" name="birthday">
+              </div>
+              <div class="mb-3">
+                <label for="hobbies" class="form-label">Hobbies</label>
+                <textarea class="form-control" placeholder="Write your hobbies here..." id="hobbies" name="hobbies"></textarea>
+              </div>
+            <button type="submit" class="btn btn-outline-primary">Create Profile</button>
+          </form>
+        </div>
+        
+      </div>
+      
     </div>
     </div>
-    
-  
-</div>
 
 <%- include("partials/footer.ejs") %>

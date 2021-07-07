@@ -1,38 +1,29 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100 d-flex align-items-center flex-column shadow p-3 mb-5 bg-transparent rounded">
-      <%- include("partials/flash.ejs") %>
-      <div class="w-75">
-        <h1 class="h4 text-center mt-5 badge bg-light text-dark" style="font-size: 35px"">All Posts</h1>
-        <% posts.forEach(post => { %>
-            <div class="col-8">
-              <div class="card mb-1 mt-5 text-break" style="border-radius: 10px">
-                <div class="card-body">
-                  <%= post.content %>
-                </div>
-            <p class="text-primary">Created By <%= post.author.username %><p/>
-            <p class="text-primary">Date: <%= post.date %><p/>
-              <div class="d-flex flex-row bd-highlight mb-3 ">
-            <% if(currentUser && post.author.equals(currentUser._id)) { %> 
-              <div class="btn-group mt-4 ms-1" role="group" aria-label="Basic example">
-                <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-primary">Update</a>
-                <form action="/<%= post.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-primary ms-1">Delete</button></form>
-
-              </div>
-                <div class="ms-1">
-                <h6>Created By <span class="badge rounded-pill" style="background-color: #008e9b"><%= post.author.username %></span></h6>
-                </div>
-                <!-- <div class="d-flex flex-row bd-highlight mb-3"> -->
-                  <% if(currentUser && post.author.equals(currentUser._id)) { %> 
-                  <div class="btn-group mt-4 ms-1" role="group" aria-label="Basic example">
-                    <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-success rounded rounded-3">Update</a>
-                    <form action="/<%= post.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-danger ms-1 rounded rounded-3">Delete</button></form>
-                  </div>
-              <!-- </div> -->
-            </div>
-            <% } %> 
-          <% }) %>
+<div class="d-flex align-items-center flex-column">
+  <%- include("partials/flash.ejs") %>
+  <h1 class="bg-light text-dark p-4 rounded-pill mb-5">All Posts</h1>
+  <% posts.forEach(post => { %>
+  <div class="col-8 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <blockquote class="blockquote mb-3">
+          <p><%= post.content %></p>
+          <footer class="blockquote-footer">Created By <cite title="Source Title"><%= post.author.username %></cite></footer>
+        </blockquote>
+        <% if(currentUser && post.author.equals(currentUser._id)) { %>
+        <form action="/<%= post.id %>?_method=DELETE" method="POST">
+          <div class="btn-group">
+            <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
+            <button class="btn btn-outline-danger text-capitalize mb-2" type="submit">Delete</button>
+          </div>
+        </form>
+        <% } %>
+      </div>
+      <div class="card-footer text-muted"><%= post.date %></div>
     </div>
+  </div>
+  <% }) %>
+</div>
+
 <%- include("partials/footer.ejs") %>
-
-
