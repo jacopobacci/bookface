@@ -3,9 +3,9 @@
     <div class="container min-vh-100">
       <%- include("partials/flash.ejs") %>
       <div class="d-flex justify-content-center align-items-center min-vh-100 flex-column">
-        <h1>Your Profile</h1>
+        <h1>All Profiles</h1>
+        <% profiles.forEach(profile => { %>
         <div class="card" style="width: 18rem;">
-            
             <ul class="list-group list-group-flush">
               <li class="list-group-item">First Name: <%= profile.firstName %></li>
               <li class="list-group-item">Last Name: <%= profile.lastName %></li>
@@ -13,13 +13,19 @@
               <li class="list-group-item">Address: <%= profile.address %></li>
               <li class="list-group-item">Birthday: <%= profile.birthday %></li>
             </ul>
-            
             <div class="card-body">
                 <h5 class="card-title">Hobbies</h5>
                 <p class="card-text"><%= profile.hobbies %></p>
             </div>
+            <% if(currentUser && profile.author.equals(currentUser._id)) { %> 
+              <div class="btn-group" role="group" aria-label="Basic example">
+                  <a role="button" href="/updateprofile/<%= profile.id %>" class="btn btn-primary">Update</a>
+                  <form action="/deleteprofile/<%= profile.id %>?_method=DELETE" method="POST"><button type="submit" class="btn btn-primary">Delete</button></form>
+                </div>
+              <% } %> 
+              <span>Created By  <%= profile.author.username %><span/></span>
         </div>
-
+        <% }) %> 
     </div>
     
 

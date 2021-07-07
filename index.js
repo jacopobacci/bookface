@@ -9,9 +9,10 @@ const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
 const User = require('./models/user');
 const Post = require('./models/post');
+const Profile = require('./models/profile');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const { isLoggedIn, isAuthor } = require('./middleware')
+const { isLoggedIn, isAuthorPost, isAuthorProfile } = require('./middleware')
 
 const app = express();
 
@@ -135,7 +136,6 @@ app.get('/logout', (req,res) => {
 
 app.get('/posts', async (req, res)=> {
   const posts = await Post.find({}).populate('author');
- 
   res.render('posts.ejs', { posts })
 })
 
@@ -159,17 +159,15 @@ app.post('/posts', isLoggedIn, async (req, res, next) => {
 app.get('/updatepost/:id', async (req, res)=> {
   try{
     const {id} = req.params
-    console.log(req.params)
     const post = await Post.findById(id)
     res.render('updatePost.ejs', {post})
-
   }
   catch (e) {
     console.log(e)
   }
 })
 
-app.put('/updatepost/:id', isLoggedIn, isAuthor, async (req, res) => {
+app.put('/updatepost/:id', isLoggedIn, isAuthorPost, async (req, res) => {
   try {
     const {id} = req.params
     await Post.findByIdAndUpdate(id, req.body)
@@ -183,7 +181,7 @@ app.put('/updatepost/:id', isLoggedIn, isAuthor, async (req, res) => {
 
 //Deleting posts
 
-app.delete('/:id', isLoggedIn, isAuthor, async (req, res) => {
+app.delete('/:id', isLoggedIn, isAuthorPost, async (req, res) => {
   try {
     const {id} = req.params
     await Post.findByIdAndDelete(id)
@@ -196,5 +194,76 @@ app.delete('/:id', isLoggedIn, isAuthor, async (req, res) => {
 })
 
 
+//Profile creation
+
+app.get('/user/createprofile', (req,res) => {
+  res.render('createProfile.ejs')
+})
+
+app.post('/user/profile', isLoggedIn, async (req, res) => {
+  try {
+    const user = await User.find({hasProfile: false})
+    console.log(user)
+    if(user.length){
+      const newProfile = new Profile(req.body);
+      newProfile.author = req.user._id;
+      await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
+      await newProfile.save();
+      req.flash('success', 'Profile succefully created');
+      res.redirect('/user/profile');
+    } else {
+      req.flash('error', 'Personal profile already created!')
+      res.redirect('/user/profile');
+    }
+  } catch (e) {
+    console.log(e)
+  }
+})
+
+//Show Profile
+
+app.get('/user/profile', async (req, res) => {
+  const profiles = await Profile.find({}).populate('author')
+  res.render('showProfile.ejs', { profiles });
+})
+
+// update profile
+
+app.get('/updateprofile/:id', async (req, res)=> {
+  try{
+    const {id} = req.params;
+    const profile = await Profile.findById(id);
+    res.render('updateProfile.ejs', { profile });
+  }
+  catch (e) {
+    console.log(e)
+  }
+})
+
+app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
+  try {
+    const { id } = req.params
+    await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    req.flash('success', 'Profile successfully updated')
+    res.redirect('/user/profile')
+  }
+  catch(e) {
+    console.log(e)
+  }
+})
+
+// delete profile
+
+app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
+  try {
+    const { id } = req.params
+    await Profile.findByIdAndDelete(id)
+    req.flash('success', 'Profile successfully deleted')
+    res.redirect('/')
+  }
+  catch (e) {
+    console.log(e)
+  }
+})
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));

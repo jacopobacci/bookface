@@ -1,4 +1,5 @@
 <%- include("partials/navbar.ejs") %>
+
 <div class="container min-vh-100">
     <form action="/user/profile" method="POST">
         <div class="mb-3">
@@ -25,16 +26,8 @@
             <label for="hobbies">Hobbies</label>
             <textarea class="form-control" placeholder="Write your hobbies here" id="hobbies" name="hobbies"></textarea>
           </div>
-          <!-- <div class="mb-3">
-            <label for="hobbies" class="form-label">Hobbies</label>
-            <input type="image" class="form-control" id="hobbies" name="hobbies">
-          </div> -->
-
-        
-        
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
 </div>
-    
-  
-  <%- include("partials/footer.ejs") %>
+
+<%- include("partials/footer.ejs") %>
