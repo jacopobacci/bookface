@@ -52,9 +52,12 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(flash());
 
+
 // MIDDLEWARE
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+  const user = await User.find({hasProfile: false})
   res.locals.currentUser = req.user;
+  res.locals.hasProfile = user.length;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
@@ -150,7 +153,6 @@ const now = `${mm}/${dd}/${yyyy}`;
 app.post('/posts', isLoggedIn, async (req, res) => {
   try {
     const newPost = new Post({...req.body, date: now});
-    console.log(newPost)
     newPost.author = req.user._id;
     await newPost.save();
     req.flash('success', 'Post succefully created');
@@ -209,7 +211,6 @@ app.get('/user/createprofile', (req,res) => {
 app.post('/profiles', isLoggedIn, async (req, res) => {
   try {
     const user = await User.find({hasProfile: false})
-    console.log(user)
     if(user.length){
       const newProfile = new Profile(req.body);
       newProfile.author = req.user._id;
@@ -263,9 +264,10 @@ app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
 app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
   try {
     const { id } = req.params
+    await User.findByIdAndUpdate(req.user._id, { hasProfile: false })
     await Profile.findByIdAndDelete(id)
     req.flash('success', 'Profile successfully deleted')
-    res.redirect('/')
+    res.redirect('/profiles')
   }
   catch (e) {
     console.log(e)
