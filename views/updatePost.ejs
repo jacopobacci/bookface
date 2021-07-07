@@ -1,14 +1,16 @@
 <%- include("partials/navbar.ejs") %>
 
-    <div class="container min-vh-100 shadow p-3 mb-5 bg-body rounded">
+    <div class="container min-vh-100 shadow p-3 mb-5 bg-transparent rounded">
       <div class="d-flex justify-content-start align-items-center min-vh-100 flex-column p-5">
-        <h1 class="h4 text-muted">Update Post</h1>
+        <h1 class="h4 text-dark fw-bold" style="font-weight: 900; font-size: 35px">Update Post</h1>
         <form action="/updatepost/<%= post.id %>?_method=PUT" method="POST" class="w-75">
           <div class="mb-3">
             <textarea class="form-control mt-5 w-100 h-50" placeholder="Write a new post." id="content" name="content"><%= post.content %></textarea>
             <label for="content"></label>
-          </div> 
-          <button type="submit" class="btn btn-primary">Submit</button>
+            <div>
+            <button type="submit" class="btn btn-success rounded rounded-3">Submit</button>
+            </div>
+          </div>
         </form>
       </div>
     </div>
