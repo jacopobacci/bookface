@@ -136,7 +136,6 @@ app.get('/logout', (req,res) => {
 
 app.get('/posts', async (req, res)=> {
   const posts = await Post.find({}).populate('author');
- 
   res.render('posts.ejs', { posts })
 })
 
@@ -203,14 +202,20 @@ app.get('/user/createprofile', (req,res) => {
   res.render('createProfile.ejs')
 })
 
-app.post('/user/profile', async (req, res) => {
+app.post('/user/profile', isLoggedIn, async (req, res) => {
   try {
-    const newProfile = new Profile(req.body);
-    newProfile.author = req.user._id;
-    await newProfile.save();
-    req.flash('success', 'Profile succefully created');
-    
-    res.redirect('/user/profile');
+    const user = await User.find({hasProfile: false})
+    if(user.length){
+      const newProfile = new Profile(req.body);
+      newProfile.author = req.user._id;
+      await User.findByIdAndUpdate(req.user.id, {hasProfile: true})
+      await newProfile.save();
+      req.flash('success', 'Profile succefully created');
+      res.redirect('/user/profile');
+    } else {
+      req.flash('error', 'Personal profile already created!')
+      res.redirect('/user/profile');
+    }
   } catch (e) {
     console.log(e)
   }
@@ -219,14 +224,8 @@ app.post('/user/profile', async (req, res) => {
 //Show Profile
 
 app.get('/user/profile', async (req, res) => {
-  // move the if else to app.post(user/profile)
   const profile = await Profile.findOne({}).populate('author')
-  if (profile) {
-    req.flash('error', 'Personal profile already created!')
-    res.redirect('/posts')
-  }else {
-    res.render('showProfile.ejs', { profile })
-  }
+  res.render('showProfile.ejs', { profile });
 })
 
 
