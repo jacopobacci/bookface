@@ -93,7 +93,7 @@ app.post('/user/register', async (req, res) => {
         console.log(e)
       } else {
         req.flash('success', 'Successfully registered!');
-        res.redirect('/posts');
+        res.redirect('/user/createprofile');
       }
     })
   } catch (e) {
@@ -141,10 +141,16 @@ app.get('/posts', async (req, res)=> {
 
 // Creating post
 
-app.post('/posts', isLoggedIn, async (req, res, next) => {
- 
+const today = new Date();
+const dd = String(today.getDate()).padStart(2, '0');
+const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+const yyyy = today.getFullYear();
+const now = `${mm}/${dd}/${yyyy}`;
+
+app.post('/posts', isLoggedIn, async (req, res) => {
   try {
-    const newPost = new Post(req.body);
+    const newPost = new Post({...req.body, date: now});
+    console.log(newPost)
     newPost.author = req.user._id;
     await newPost.save();
     req.flash('success', 'Post succefully created');

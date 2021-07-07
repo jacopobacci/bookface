@@ -6,7 +6,8 @@
         <h1 class="h4 text-muted text-center mt-5">All Posts</h1>
         <% posts.forEach(post => { %>
             <p class="p-3 mb-3 mt-5 border rounded text-break text-secondary"><%= post.content %></p>
-            <span class="text-primary">Created By  <%= post.author.username %><span/>
+            <p class="text-primary">Created By <%= post.author.username %><p/>
+            <p class="text-primary">Date: <%= post.date %><p/>
               <div class="d-flex flex-row bd-highlight mb-3 ">
             <form action="/posts" method="POST">
                 <input type="checkbox" class="btn-check" id="isLiked" autocomplete="off" name="isLiked">

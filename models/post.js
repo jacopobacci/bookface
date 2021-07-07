@@ -5,8 +5,8 @@ const postSchema = new Schema({
   content: {
     type: String
   },
-  isLiked: {
-      type: Boolean
+  date: {
+    type: String
   },
   author: {
     type: Schema.Types.ObjectId,
