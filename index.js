@@ -93,7 +93,7 @@ app.get('/user/register', (req, res) => {
 
 app.post('/user/register', async (req, res) => {
   try {
-    const { username, email, password} = req.body;
+    const { username, email, password } = req.body;
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
     req.login(registeredUser, e => {
@@ -206,7 +206,6 @@ app.put('/updatepost/:id', isLoggedIn, isAuthorPost, upload.single('img'), async
       req.body.img = req.file.path;
       const post = await Post.findById(id);
       const cloudinaryImgName = post.imageFileName;
-      // await cloudinary.uploader.destroy(cloudinaryImgName);
       if(req.body.imageFileName !== cloudinaryImgName){
         await cloudinary.uploader.destroy(cloudinaryImgName);
       }
