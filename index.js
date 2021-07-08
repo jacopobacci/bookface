@@ -12,7 +12,11 @@ const Post = require('./models/post');
 const Profile = require('./models/profile');
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
-const { isLoggedIn, isAuthorPost, isAuthorProfile } = require('./middleware')
+const { isLoggedIn, isAuthorPost, isAuthorProfile } = require('./middleware');
+const multer = require('multer');
+const { storage } = require('./cloudinary');
+const { cloudinary } = require('./cloudinary');
+const upload = multer({ storage });
 
 const app = express();
 
@@ -151,18 +155,34 @@ const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 const yyyy = today.getFullYear();
 const now = `${dd}/${mm}/${yyyy}`;
 
-app.post('/posts', isLoggedIn, async (req, res) => {
+app.post('/posts', isLoggedIn, upload.single('img'), async (req, res) => {
   try {
+    if (!req.file) {
+      const newPost = new Post({...req.body, date: now});
+      newPost.author = req.user._id;
+      await newPost.save();
+    } else {
+    req.body.img = req.file.path;
+    req.body.imageFileName = req.file.filename;
     const newPost = new Post({...req.body, date: now});
     newPost.author = req.user._id;
     await newPost.save();
+    }
     req.flash('success', 'Post succefully created');
     res.redirect('/posts');
   } catch (e) {
     req.flash('error', e);
   }
- 
 })
+// if (req.file === undefined) {
+//   const newPlant = new Plant(req.body);
+//   await newPlant.save();
+// } else {
+//   req.body.img = req.file.path;
+//   req.body.imageFileName = req.file.filename;
+//   const newPlant = new Plant(req.body);
+//   await newPlant.save();
+// }
 // Updating posts
 
 app.get('/updatepost/:id', async (req, res)=> {
@@ -176,10 +196,23 @@ app.get('/updatepost/:id', async (req, res)=> {
   }
 })
 
-app.put('/updatepost/:id', isLoggedIn, isAuthorPost, async (req, res) => {
+app.put('/updatepost/:id', isLoggedIn, isAuthorPost, upload.single('img'), async (req, res) => {
   try {
-    const {id} = req.params
-    await Post.findByIdAndUpdate(id, req.body)
+    if(!req.file) {
+      const { id } = req.params
+      await Post.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    } else {
+      const { id } = req.params;
+      req.body.img = req.file.path;
+      const post = await Post.findById(id);
+      const cloudinaryImgName = post.imageFileName;
+      // await cloudinary.uploader.destroy(cloudinaryImgName);
+      if(req.body.imageFileName !== cloudinaryImgName){
+        await cloudinary.uploader.destroy(cloudinaryImgName);
+      }
+      req.body.imageFileName = req.file.filename;
+      await Post.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    }
     req.flash('success', 'Post successfully updated')
     res.redirect('/posts')
   }
@@ -193,7 +226,14 @@ app.put('/updatepost/:id', isLoggedIn, isAuthorPost, async (req, res) => {
 app.delete('/:id', isLoggedIn, isAuthorPost, async (req, res) => {
   try {
     const {id} = req.params
-    await Post.findByIdAndDelete(id)
+    const post = await Post.findById(id);
+    if(post.img){
+      const cloudinaryImgName = post.imageFileName;
+      await cloudinary.uploader.destroy(cloudinaryImgName);
+      await Post.findByIdAndDelete(id)
+    }else{
+      await Post.findByIdAndDelete(id)
+    }
     req.flash('success', 'Post successfully deleted')
     res.redirect('/posts')
   }
@@ -248,7 +288,7 @@ app.get('/updateprofile/:id', async (req, res)=> {
   }
 })
 
-app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
+app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, upload.single('img'), async (req, res) => {
   try {
     const { id } = req.params
     await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
@@ -259,6 +299,7 @@ app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
     console.log(e)
   }
 })
+
 
 // delete profile
 

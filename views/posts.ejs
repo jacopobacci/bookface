@@ -4,8 +4,14 @@
   <%- include("partials/flash.ejs") %>
   <h1 class="bg-light text-dark p-4 rounded-pill mb-5 shadow">All Posts</h1>
   <% posts.forEach(post => { %>
-  <div class="col-md-8 col-12 mb-3">
+  <div class="col-md-6 col-12 mb-3">
     <div class="card shadow">
+      <% if(post.img){ %> 
+        <div class="card-body">
+          <img src="<%= post.img %>" class="card-img-top rounded post-img" alt="...">
+
+        </div>
+      <% } %> 
       <div class="card-body">
         <blockquote class="blockquote mb-3">
           <p><%= post.content %></p>
