@@ -1,0 +1,38 @@
+<%- include("partials/navbar.ejs") %>
+
+<div class="d-flex align-items-center flex-column">
+  <%- include("partials/flash.ejs") %>
+  <h1 class="bg-light text-dark p-4 rounded-pill mb-5 shadow">All Posts</h1>
+  <form action="/posts/search" class="d-flex mb-5">
+    <input type="search" class="form-control me-2" placeholder="Search for a post..." name="search">
+    <button class="btn btn-primary">Search</button>
+  </form>
+  <% searchedPosts.forEach(post => { %>
+  <div class="col-md-6 col-12 mb-3">
+    <div class="card shadow">
+      <% if(post.img){ %> 
+        <div class="card-body">
+          <img src="<%= post.img %>" class="card-img-top rounded post-img" alt="...">
+        </div>
+      <% } %> 
+      <div class="card-body">
+        <blockquote class="blockquote mb-3">
+          <p><%= post.content %></p>
+          <footer class="blockquote-footer">Created By <cite title="Source Title"><%= post.author.username %></cite></footer>
+        </blockquote>
+        <% if(currentUser && post.author.equals(currentUser._id)) { %>
+        <form action="/<%= post.id %>?_method=DELETE" method="POST">
+          <div class="btn-group">
+            <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
+            <button class="btn btn-outline-danger text-capitalize mb-2" type="submit">Delete</button>
+          </div>
+        </form>
+        <% } %>
+      </div>
+      <div class="card-footer text-muted"><%= post.date %></div>
+    </div>
+  </div>
+  <% }) %>
+</div>
+
+<%- include("partials/footer.ejs") %>
