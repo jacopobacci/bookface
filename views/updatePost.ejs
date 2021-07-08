@@ -2,7 +2,7 @@
 
 
 
-    <div class="d-flex align-items-center flex-column">
+    <!-- <div class="d-flex align-items-center flex-column">
       <h1 class="bg-light text-dark p-4 rounded-pill mb-5 shadow">Update Post</h1>
       <div class="col-lg-6 col-12">
         <div class="card shadow">
@@ -19,6 +19,31 @@
           </div>
         </div>
       </div>
+    </div> -->
+
+    <div class="d-flex align-items-center flex-column">
+      <h1 class="bg-light text-dark p-4 rounded-pill mb-5 shadow">Update Post</h1>
+    <div class="col-lg-6 col-12">
+      <div class="card shadow">
+        <div class="card-header">
+         Update
+        </div>
+        <form action="/updatepost/<%= post.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+        <div class="card-body">
+          <h2 class="mb-3">Choose Image</h2>
+        <div  class="input-group mb-3">
+            <input type="file" class="form-control" id="uploadImageUrl" name='img' aria-describedby="uploadImageUrl" aria-label="upload">
+        </div>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+              <textarea class="form-control rounded" placeholder="Write a new post..." id="content" name="content" style="height: 100px" required><%= post.content %></textarea>
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Submit</button>
+        </div>
+      </form>
+      </div>
+    </div>
     </div>
 
 <%- include("partials/footer.ejs") %>

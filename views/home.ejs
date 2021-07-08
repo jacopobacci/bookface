@@ -1,14 +1,8 @@
 <%- include("partials/navbar.ejs") %>
       <div><%- include("partials/flash.ejs") %></div>
       <div class="d-flex justify-content-center align-items-center min-vh-100 flex-column">
-      
-        
-        
         <div class="d-flex justify-content-center align-items-center bg-transparent shadow rounded-circle">
-          
           <img src="/img/profile.png" alt="landing-img" class="landing-img">
-      
-         
         </div>
         <% if(!currentUser){ %> 
         <div class="mt-5">
@@ -16,7 +10,5 @@
           <a role="button" href="/user/register" class="btn bg-transparent shadow rounded-pill btn-lg">Register</a>
         </div>
         <% } %> 
-      
-      
       </div>
 <%- include("partials/footer.ejs") %>
