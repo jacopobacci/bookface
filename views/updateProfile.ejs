@@ -14,11 +14,11 @@
                 <form action="/updateprofile/<%= profile.id %>?_method=PUT" method="POST">
                   <div class="mb-3">
                     <label for="firstName" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="firstName" name="firstName" value='<%= profile.firstName %>'>
+                    <input type="text" class="form-control" id="firstName" name="firstName" value='<%= profile.firstName %>' required>
                   </div>
                   <div class="mb-3">
                       <label for="lastName" class="form-label">Last Name</label>
-                      <input type="text" class="form-control" id="lastName" name="lastName" value='<%= profile.lastName %>'>
+                      <input type="text" class="form-control" id="lastName" name="lastName" value='<%= profile.lastName %>' required>
                     </div>
                     <div class="mb-3">
                       <label for="phone" class="form-label">Phone</label>

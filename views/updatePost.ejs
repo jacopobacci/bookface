@@ -12,7 +12,7 @@
           <div class="card-body">
             <form action="/updatepost/<%= post.id %>?_method=PUT" method="POST">
               <div class="mb-3">
-                <textarea class="form-control rounded" placeholder="Write a new post..." id="content" name="content" style="height: 100px"><%= post.content %></textarea>
+                <textarea class="form-control rounded" placeholder="Write a new post..." id="content" name="content" style="height: 100px" required><%= post.content %></textarea>
               </div>
               <button type="submit" class="btn btn-outline-primary">Submit</button>
             </form>

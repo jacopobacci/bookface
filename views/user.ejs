@@ -1,0 +1,9 @@
+<%- include("partials/navbar.ejs") %>
+      <%- include("partials/flash.ejs") %>
+      <div class="d-flex min-vh-100 justify-content-center align-items-center">
+        <form action="/user/<%= currentUser._id %>" method="post">
+            <button class="btn btn-danger btn-lg" type="submit">Delete User</button>
+        </form>
+      </div>
+      
+<%- include("partials/footer.ejs") %>

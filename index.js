@@ -148,7 +148,7 @@ const today = new Date();
 const dd = String(today.getDate()).padStart(2, '0');
 const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 const yyyy = today.getFullYear();
-const now = `${mm}/${dd}/${yyyy}`;
+const now = `${dd}/${mm}/${yyyy}`;
 
 app.post('/posts', isLoggedIn, async (req, res) => {
   try {
@@ -230,7 +230,7 @@ app.post('/profiles', isLoggedIn, async (req, res) => {
 //Show Profile
 
 app.get('/profiles', async (req, res) => {
-  const profiles = await Profile.find({}).populate('author')
+  const profiles = await Profile.find({}).populate('author');
   res.render('showProfiles.ejs', { profiles });
 })
 
@@ -273,5 +273,22 @@ app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) =
     console.log(e)
   }
 })
+
+// get user
+
+app.get('/user', (req,res)=>{
+  res.render('user.ejs')
+})
+
+app.post('/user/:id', isLoggedIn, async (req, res)=>{
+ try {
+  const { id } = req.params;
+  await User.findByIdAndDelete(id);
+  res.redirect('/user/register');
+ } catch (e) {
+   console.log(e)
+ }
+})
+
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
