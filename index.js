@@ -93,20 +93,20 @@ app.get('/user/register', (req, res) => {
 
 app.post('/user/register', async (req, res) => {
   try {
-    const { username,email, password} = req.body;
+    const { username, email, password} = req.body;
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
     req.login(registeredUser, e => {
-      if(e) {
-        console.log(e)
+      if(err) {
+        console.log(err)
       } else {
         req.flash('success', 'Successfully registered!');
         res.redirect('/user/createprofile');
       }
     })
-  } catch (e) {
-    console.log(e);
-    req.flash('error', 'Registration error, try again!')
+  } catch (err) {
+    console.log(err);
+    req.flash('error', 'Username already exists!')
     res.redirect('/user/register');
   }
 });
@@ -170,7 +170,7 @@ app.post('/posts', isLoggedIn, upload.single('img'), async (req, res) => {
     }
     req.flash('success', 'Post succefully created');
     res.redirect('/posts');
-  } catch (e) {
+  } catch (err) {
     req.flash('error', e);
   }
 })
@@ -191,8 +191,8 @@ app.get('/updatepost/:id', async (req, res)=> {
     const post = await Post.findById(id)
     res.render('updatePost.ejs', {post})
   }
-  catch (e) {
-    console.log(e)
+  catch (err) {
+    console.log(err)
   }
 })
 
@@ -217,7 +217,7 @@ app.put('/updatepost/:id', isLoggedIn, isAuthorPost, upload.single('img'), async
     res.redirect('/posts')
   }
   catch(e) {
-    console.log(e)
+    console.log(err)
   }
 })
 
@@ -237,8 +237,8 @@ app.delete('/:id', isLoggedIn, isAuthorPost, async (req, res) => {
     req.flash('success', 'Post successfully deleted')
     res.redirect('/posts')
   }
-  catch (e) {
-    console.log(e)
+  catch (err) {
+    console.log(err)
   }
 })
 
@@ -263,8 +263,8 @@ app.post('/profiles', isLoggedIn, async (req, res) => {
       req.flash('error', 'Personal profile already created!')
       res.redirect('/profiles');
     }
-  } catch (e) {
-    console.log(e)
+  } catch (err) {
+    console.log(err)
   }
 })
 
@@ -283,8 +283,8 @@ app.get('/updateprofile/:id', async (req, res)=> {
     const profile = await Profile.findById(id);
     res.render('updateProfile.ejs', { profile });
   }
-  catch (e) {
-    console.log(e)
+  catch (err) {
+    console.log(err)
   }
 })
 
@@ -296,10 +296,9 @@ app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, upload.single('img'),
     res.redirect('/profiles')
   }
   catch(e) {
-    console.log(e)
+    console.log(err)
   }
 })
-
 
 // delete profile
 
@@ -311,8 +310,8 @@ app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) =
     req.flash('success', 'Profile successfully deleted')
     res.redirect('/profiles')
   }
-  catch (e) {
-    console.log(e)
+  catch (err) {
+    console.log(err)
   }
 })
 
@@ -329,8 +328,8 @@ app.post('/user/:id', isLoggedIn, async (req, res)=>{
   const { id } = req.params;
   await User.findByIdAndDelete(id);
   res.redirect('/user/register');
- } catch (e) {
-   console.log(e)
+ } catch (err) {
+   console.log(err)
  }
 })
 
