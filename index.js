@@ -171,18 +171,10 @@ app.post('/posts', isLoggedIn, upload.single('img'), async (req, res) => {
     req.flash('success', 'Post succefully created');
     res.redirect('/posts');
   } catch (err) {
-    req.flash('error', e);
+    req.flash('error', err);
   }
 })
-// if (req.file === undefined) {
-//   const newPlant = new Plant(req.body);
-//   await newPlant.save();
-// } else {
-//   req.body.img = req.file.path;
-//   req.body.imageFileName = req.file.filename;
-//   const newPlant = new Plant(req.body);
-//   await newPlant.save();
-// }
+
 // Updating posts
 
 app.get('/updatepost/:id', async (req, res)=> {
@@ -336,7 +328,7 @@ app.get('/posts/search', async (req, res) => {
     const {search} = req.query;
     const searchedPosts = await Post.find({ content: { $regex: search, $options: 'i' }}).exec()
     if (searchedPosts) {
-      res.render('search.ejs', {searchedPosts})
+      res.render('searchPosts.ejs', {searchedPosts})
     }
     else {
       req.flash('error', 'The post you are searching for does not exist')
@@ -348,20 +340,20 @@ app.get('/posts/search', async (req, res) => {
   }
 })
 
-// app.get('/profiles/search', async (req, res) => {
-//   try {
-//     const {search} = req.query;
-//     const searchedPosts = await User.find({ username: { $regex: search, $options: 'i' }}).exec()
-//     if (searchedPosts) {
-//       res.render('search.ejs', {searchedPosts})
-//     }
-//     else {
-//       req.flash('error', 'The profile you are searching for does not exist')
-//       res.redirect('/posts')
-//     }
-//   }
-//   catch (err) {
-//     console.log(err)
-//   }
-// })
+app.get('/profiles/search', async (req, res) => {
+  try {
+    const {search} = req.query;
+    const searchedProfiles = await User.find({ username: { $regex: search, $options: 'i' }}).exec()
+    if (searchedProfiles) {
+      res.render('searchProfiles.ejs', {searchedProfiles})
+    }
+    else {
+      req.flash('error', 'The profile you are searching for does not exist')
+      res.redirect('/posts')
+    }
+  }
+  catch (err) {
+    console.log(err)
+  }
+})
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
