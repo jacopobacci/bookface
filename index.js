@@ -333,6 +333,37 @@ app.post('/user/:id', isLoggedIn, async (req, res)=>{
    console.log(e)
  }
 })
+app.get('/posts/search', async (req, res) => {
+  try {
+    const {search} = req.query;
+    const searchedPosts = await Post.find({ content: { $regex: search, $options: 'i' }}).exec()
+    if (searchedPosts) {
+      res.render('search.ejs', {searchedPosts})
+    }
+    else {
+      req.flash('error', 'The post you are searching for does not exist')
+      res.redirect('/posts')
+    }
+  }
+  catch (err) {
+    console.log(err)
+  }
+})
 
-
+// app.get('/profiles/search', async (req, res) => {
+//   try {
+//     const {search} = req.query;
+//     const searchedPosts = await User.find({ username: { $regex: search, $options: 'i' }}).exec()
+//     if (searchedPosts) {
+//       res.render('search.ejs', {searchedPosts})
+//     }
+//     else {
+//       req.flash('error', 'The profile you are searching for does not exist')
+//       res.redirect('/posts')
+//     }
+//   }
+//   catch (err) {
+//     console.log(err)
+//   }
+// })
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
