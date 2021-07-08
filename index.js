@@ -54,6 +54,7 @@ app.use(flash());
 
 
 // MIDDLEWARE
+
 app.use(async (req, res, next) => {
   const user = await User.find({hasProfile: false})
   res.locals.currentUser = req.user;
@@ -279,6 +280,8 @@ app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) =
 app.get('/user', (req,res)=>{
   res.render('user.ejs')
 })
+
+// delete user
 
 app.post('/user/:id', isLoggedIn, async (req, res)=>{
  try {
