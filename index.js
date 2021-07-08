@@ -96,7 +96,7 @@ app.post('/user/register', async (req, res) => {
     const { username, email, password } = req.body;
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
-    req.login(registeredUser, e => {
+    req.login(registeredUser, err => {
       if(err) {
         console.log(err)
       } else {
