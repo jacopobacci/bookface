@@ -96,7 +96,7 @@ app.post('/user/register', async (req, res) => {
     const { username, email, password } = req.body;
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
-    req.login(registeredUser, e => {
+    req.login(registeredUser, err => {
       if (err) {
         console.log(err)
       } else {
@@ -315,13 +315,13 @@ app.get('/user', (req,res)=>{
 // delete user
 
 app.post('/user/:id', isLoggedIn, async (req, res)=>{
- try {
-  const { id } = req.params;
-  await User.findByIdAndDelete(id);
-  res.redirect('/user/register');
- } catch (err) {
-   console.log(err)
- }
+  try {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id);
+    res.redirect('/user/register');
+  } catch (err) {
+    console.log(err)
+  }
 })
 
 app.get('/posts/search', async (req, res) => {
@@ -375,7 +375,8 @@ app.get('/updateuser/:id', async (req, res) => {
 app.put('/updateuser/:id',  async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(req.body)
+    // const user = await User.findById(id)
+    // await user.changePassword(req.body.password, req.body.password)
     await User.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
     res.redirect('/user');
   } catch (err) {

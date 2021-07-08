@@ -1,11 +1,11 @@
 <%- include("partials/navbar.ejs") %>
 
       <%- include("partials/flash.ejs") %>
-      <div class="d-flex min-vh-100 justify-content-center align-items-center">
+      <div class="pt-5 d-flex justify-content-center align-items-center">
         <form action="/user/<%= currentUser._id %>" method="post">
-            <button class="btn btn-danger btn-lg shadow" type="submit">Delete User</button>
+            <button class="btn btn-danger btn-lg shadow me-3" type="submit">Delete User</button>
         </form>
-          <a href="/updateuser/<%= currentUser._id %>" class="btn btn-success btn-lg shadow" type="submit">Update User</a>
+        <a href="/updateuser/<%= currentUser._id %>" class="btn btn-outline-light btn-lg shadow">Update User Email</a>
       </div>
 
 <%- include("partials/footer.ejs") %>
