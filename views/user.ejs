@@ -5,6 +5,7 @@
         <form action="/user/<%= currentUser._id %>" method="post">
             <button class="btn btn-danger btn-lg shadow" type="submit">Delete User</button>
         </form>
+          <a href="/updateuser/<%= currentUser._id %>" class="btn btn-success btn-lg shadow" type="submit">Update User</a>
       </div>
-      
+
 <%- include("partials/footer.ejs") %>

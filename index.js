@@ -97,7 +97,7 @@ app.post('/user/register', async (req, res) => {
     const user = new User ({ username, email });
     const registeredUser = await User.register(user, password);
     req.login(registeredUser, e => {
-      if(err) {
+      if (err) {
         console.log(err)
       } else {
         req.flash('success', 'Successfully registered!');
@@ -323,6 +323,7 @@ app.post('/user/:id', isLoggedIn, async (req, res)=>{
    console.log(err)
  }
 })
+
 app.get('/posts/search', async (req, res) => {
   try {
     const {search} = req.query;
@@ -342,7 +343,7 @@ app.get('/posts/search', async (req, res) => {
 
 app.get('/profiles/search', async (req, res) => {
   try {
-    const {search} = req.query;
+    const { search } = req.query;
     const searchedProfiles = await User.find({ username: { $regex: search, $options: 'i' }}).exec()
     if (searchedProfiles) {
       res.render('searchProfiles.ejs', {searchedProfiles})
@@ -356,4 +357,32 @@ app.get('/profiles/search', async (req, res) => {
     console.log(err)
   }
 })
+
+//update user
+
+app.get('/updateuser/:id', async (req, res) => {
+  try {
+    const { id } = req.params
+    const user = await User.findById(id)
+    console.log(user);
+    res.render('updateUser.ejs', {user})
+  }
+  catch (err) {
+    console.log(err)
+  }
+});
+
+app.put('/updateuser/:id',  async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log(req.body)
+    await User.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    res.redirect('/user');
+  } catch (err) {
+    req.flash('error', 'Update user error, try again!')
+    res.redirect('/user/login');
+    console.log(err);
+    }
+});
+
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
