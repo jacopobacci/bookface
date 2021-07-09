@@ -12,6 +12,11 @@ body {
 .landing-img {
   width: 30vw;
 }
+@media (max-width: 768px) {
+  .landing-img {
+    width: 60vw;
+  }
+}
 
 .post-img {
   object-fit: cover;
