@@ -11,6 +11,11 @@
         <% profiles.forEach(profile => { %>
         <div class="card col-12 col-lg-4 shadow mb-3">
           <div class="card-header">This is the profile of <span class="fw-bold"><%= profile.author.username %></span></div>
+          <% if(profile.img){ %> 
+            <div class="card-body">
+              <img src="<%= profile.img %>" class="card-img-top rounded post-img" alt="...">
+            </div>
+          <% } %> 
             <ul class="list-group list-group-flush">
               <li class="list-group-item"><span class="fw-bold">First Name: </span><%= profile.firstName %></li>
               <li class="list-group-item"><span class="fw-bold">Last Name: </span><%= profile.lastName %></li>
@@ -19,7 +24,7 @@
               <li class="list-group-item"><span class="fw-bold">Birthday: </span><%= profile.birthday %></li>
             </ul>
             <div class="card-body">
-                <h5 class="card-title">Hobbies</h5>
+                <h5 class="card-title fw-bold">Hobbies</h5>
                 <p class="card-text"><%= profile.hobbies %></p>
             </div>
             <div class="card-body">

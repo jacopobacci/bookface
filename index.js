@@ -27,8 +27,10 @@ app.use(mongoSanitize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
-const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
+const dbUrl = 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
+
+// process.env.DB_URL || 
 
 
 app.use(
@@ -208,7 +210,7 @@ app.put('/updatepost/:id', isLoggedIn, isAuthorPost, upload.single('img'), async
     req.flash('success', 'Post successfully updated')
     res.redirect('/posts')
   }
-  catch(e) {
+  catch(err) {
     console.log(err)
   }
 })
@@ -223,7 +225,7 @@ app.delete('/:id', isLoggedIn, isAuthorPost, async (req, res) => {
       const cloudinaryImgName = post.imageFileName;
       await cloudinary.uploader.destroy(cloudinaryImgName);
       await Post.findByIdAndDelete(id)
-    }else{
+    } else {
       await Post.findByIdAndDelete(id)
     }
     req.flash('success', 'Post successfully deleted')
@@ -241,20 +243,38 @@ app.get('/user/createprofile', (req,res) => {
   res.render('createProfile.ejs')
 })
 
-app.post('/profiles', isLoggedIn, async (req, res) => {
+app.post('/profiles', isLoggedIn, upload.single('img'), async (req, res) => {
   try {
-    const user = await User.find({hasProfile: false})
-    if(user.length){
-      const newProfile = new Profile(req.body);
-      newProfile.author = req.user._id;
-      await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
-      await newProfile.save();
-      req.flash('success', 'Profile succefully created');
-      res.redirect('/profiles');
+    if(!req.file){
+      const user = await User.find({hasProfile: false})
+      if(user.length){
+        const newProfile = new Profile(req.body);
+        newProfile.author = req.user._id;
+        await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
+        await newProfile.save();
+        req.flash('success', 'Profile succefully created');
+        res.redirect('/profiles');
+      } else {
+        req.flash('error', 'Personal profile already created!')
+        res.redirect('/profiles');
+      }
     } else {
-      req.flash('error', 'Personal profile already created!')
-      res.redirect('/profiles');
+      const user = await User.find({hasProfile: false})
+      if(user.length){
+        req.body.img = req.file.path;
+        req.body.imageFileName = req.file.filename;
+        const newProfile = new Profile(req.body);
+        newProfile.author = req.user._id;
+        await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
+        await newProfile.save();
+        req.flash('success', 'Profile succefully created');
+        res.redirect('/profiles');
+      } else {
+        req.flash('error', 'Personal profile already created!')
+        res.redirect('/profiles');
+      }
     }
+    
   } catch (err) {
     console.log(err)
   }
@@ -282,12 +302,24 @@ app.get('/updateprofile/:id', async (req, res)=> {
 
 app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, upload.single('img'), async (req, res) => {
   try {
-    const { id } = req.params
-    await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    if(!req.file) {
+      const { id } = req.params
+      await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    } else {
+      const { id } = req.params
+      req.body.img = req.file.path;
+      const profile = await Profile.findById(id);
+      const cloudinaryImgName = profile.imageFileName;
+      if(req.body.imageFileName !== cloudinaryImgName){
+        await cloudinary.uploader.destroy(cloudinaryImgName);
+      }
+      req.body.imageFileName = req.file.filename;
+      await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    }
     req.flash('success', 'Profile successfully updated')
     res.redirect('/profiles')
   }
-  catch(e) {
+  catch(err) {
     console.log(err)
   }
 })
@@ -297,8 +329,17 @@ app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, upload.single('img'),
 app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
   try {
     const { id } = req.params
-    await User.findByIdAndUpdate(req.user._id, { hasProfile: false })
-    await Profile.findByIdAndDelete(id)
+    const profile = await Profile.findById(id);
+    console.log('profile', profile)
+    if(profile.img) {
+      await User.findByIdAndUpdate(req.user._id, { hasProfile: false })
+      const cloudinaryImgName = profile.imageFileName;
+      await cloudinary.uploader.destroy(cloudinaryImgName);
+      await Profile.findByIdAndDelete(id)
+    } else {
+      await User.findByIdAndUpdate(req.user._id, { hasProfile: false })
+      await Profile.findByIdAndDelete(id)
+    }
     req.flash('success', 'Profile successfully deleted')
     res.redirect('/profiles')
   }
@@ -306,6 +347,7 @@ app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) =
     console.log(err)
   }
 })
+
 
 // get user
 

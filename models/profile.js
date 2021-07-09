@@ -25,7 +25,13 @@ const profileSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User'
-  }
+  },
+  img: {
+    type: String,
+  },
+  imageFileName: {
+    type: String,
+  },
 });
 
 
