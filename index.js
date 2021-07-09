@@ -27,11 +27,8 @@ app.use(mongoSanitize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
-const dbUrl = 'mongodb://localhost:27017/book-face';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
-
-// process.env.DB_URL || 
-
 
 app.use(
   session({
@@ -48,8 +45,6 @@ app.use(
   })
 );
 
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -58,7 +53,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use(flash());
-
 
 // MIDDLEWARE
 
@@ -274,7 +268,6 @@ app.post('/profiles', isLoggedIn, upload.single('img'), async (req, res) => {
         res.redirect('/profiles');
       }
     }
-    
   } catch (err) {
     console.log(err)
   }
@@ -348,7 +341,6 @@ app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) =
   }
 })
 
-
 // get user
 
 app.get('/user', (req,res)=>{
@@ -407,7 +399,6 @@ app.get('/updateuser/:id', async (req, res) => {
   try {
     const { id } = req.params
     const user = await User.findById(id)
-    console.log(user);
     res.render('updateUser.ejs', {user})
   }
   catch (err) {
