@@ -10,7 +10,7 @@
         </form>
         <% profiles.forEach(profile => { %>
         <div class="card col-12 col-lg-4 shadow mb-3">
-          <div class="card-header">This is the profile of <span class="fw-bold"><%= profile.author.username %></span></div>
+          <div class="card-header">This is the profile of <span class="fw-bold text-capitalize"><%= profile.author.username %></span></div>
           <% if(profile.img){ %> 
             <div class="card-body">
               <img src="<%= profile.img %>" class="card-img-top rounded post-img" alt="...">
