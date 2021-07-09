@@ -4,6 +4,7 @@ const express = require('express');
 const methodOverride = require('method-override');
 const flash = require('connect-flash');
 const mongoSanitize = require('express-mongo-sanitize');
+const helmet = require('helmet');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
@@ -23,9 +24,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
-app.use(mongoSanitize());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
+app.use(mongoSanitize());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
