@@ -324,12 +324,10 @@ app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) =
   try {
     const { id } = req.params;
     const profile = await Profile.findById(id);
-    console.log('profile', profile);
     if (profile.img) {
       await User.findByIdAndUpdate(req.user._id, { hasProfile: false });
       const cloudinaryImgName = profile.imageFileName;
       await cloudinary.uploader.destroy(cloudinaryImgName);
-
       await Profile.findByIdAndDelete(id);
     } else {
       await User.findByIdAndUpdate(req.user._id, { hasProfile: false });
@@ -353,8 +351,20 @@ app.get('/user', (req, res) => {
 app.post('/user/:id', isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
-    await Post.deleteMany({author: id});
+    const profile = await Profile.find({author: id});
+    const posts = await Post.find({author: id});
+    if (profile[0].img) {
+      const cloudinaryImgName = profile[0].imageFileName;
+      await cloudinary.uploader.destroy(cloudinaryImgName);
+    } 
+    for (let post of posts) {
+      if (post.img) {
+        const cloudinaryImgName = post.imageFileName;
+        await cloudinary.uploader.destroy(cloudinaryImgName);
+      }
+    }
     await Profile.deleteMany({author: id});
+    await Post.deleteMany({author: id});
     await User.findByIdAndDelete(id);
     res.redirect('/user/register');
   } catch (err) {
