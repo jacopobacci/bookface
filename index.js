@@ -35,6 +35,7 @@ app.use(
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/book-face';
 const secret = process.env.SECRET || 'team-four';
+// process.env.DB_URL ||
 
 app.use(
   session({
@@ -63,32 +64,32 @@ app.use(flash());
 // MIDDLEWARE
 
 app.use(async (req, res, next) => {
-  const user = await User.find({hasProfile: false})
+  const user = await User.find({ hasProfile: false });
   res.locals.currentUser = req.user;
   res.locals.hasProfile = user.length;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
-})
+});
 
 mongoose.connect(dbUrl, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "Connection error:"));
-db.once("open", () => {
-    console.log("Database connected");
+db.on('error', console.error.bind(console, 'Connection error:'));
+db.once('open', () => {
+  console.log('Database connected');
 });
 
 app.get('/', (req, res) => {
   res.render('home.ejs');
 });
 
-//Register 
+//Register
 
 app.get('/user/register', (req, res) => {
   res.render('register.ejs');
@@ -97,58 +98,58 @@ app.get('/user/register', (req, res) => {
 app.post('/user/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const user = new User ({ username, email });
+    const user = new User({ username, email });
     const registeredUser = await User.register(user, password);
-    req.login(registeredUser, err => {
+    req.login(registeredUser, (err) => {
       if (err) {
-        console.log(err)
+        console.log(err);
       } else {
         req.flash('success', 'Successfully registered!');
         res.redirect('/user/createprofile');
       }
-    })
+    });
   } catch (err) {
     console.log(err);
-    req.flash('error', 'Username already exists!')
+    req.flash('error', 'Username already exists!');
     res.redirect('/user/register');
   }
 });
 
 //Login
 
-app.get('/user/login', (req,res) => {
+app.get('/user/login', (req, res) => {
   res.render('login.ejs');
-})
+});
 
 app.get('/newpost', isLoggedIn, (req, res) => {
   res.render('newPost.ejs');
-})
+});
 
-app.post('/user/login', passport.authenticate('local', { failureFlash: true, failureRedirect:'/user/login'}), (req, res) => {
+app.post('/user/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/user/login' }), (req, res) => {
   try {
     req.flash('success', 'Successfully logged in!');
     const redirectUrl = req.session.returnTo || '/';
     delete req.session.returnTo;
     res.redirect(redirectUrl);
   } catch {
-    req.flash('error', 'Login process error, try again!')
+    req.flash('error', 'Login process error, try again!');
   }
-})
+});
 
 // Logout
 
-app.get('/logout', (req,res) => {
+app.get('/logout', (req, res) => {
   req.logout();
   req.flash('success', 'Goodbye!');
-  res.redirect('/')
-})
+  res.redirect('/posts');
+});
 
 // Reading posts
 
-app.get('/posts', async (req, res)=> {
+app.get('/posts', async (req, res) => {
   const posts = await Post.find({}).populate('author');
-  res.render('posts.ejs', { posts })
-})
+  res.render('posts.ejs', { posts });
+});
 
 // Creating post
 
@@ -161,269 +162,262 @@ const now = `${dd}/${mm}/${yyyy}`;
 app.post('/posts', isLoggedIn, upload.single('img'), async (req, res) => {
   try {
     if (!req.file) {
-      const newPost = new Post({...req.body, date: now});
+      const newPost = new Post({ ...req.body, date: now });
       newPost.author = req.user._id;
       await newPost.save();
     } else {
-    req.body.img = req.file.path;
-    req.body.imageFileName = req.file.filename;
-    const newPost = new Post({...req.body, date: now});
-    newPost.author = req.user._id;
-    await newPost.save();
+      req.body.img = req.file.path;
+      req.body.imageFileName = req.file.filename;
+      const newPost = new Post({ ...req.body, date: now });
+      newPost.author = req.user._id;
+      await newPost.save();
     }
     req.flash('success', 'Post succefully created');
     res.redirect('/posts');
   } catch (err) {
     req.flash('error', err);
   }
-})
+});
 
 // Updating posts
 
-app.get('/updatepost/:id', async (req, res)=> {
-  try{
-    const {id} = req.params
-    const post = await Post.findById(id)
-    res.render('updatePost.ejs', {post})
+app.get('/updatepost/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const post = await Post.findById(id);
+    res.render('updatePost.ejs', { post });
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-})
+});
 
 app.put('/updatepost/:id', isLoggedIn, isAuthorPost, upload.single('img'), async (req, res) => {
   try {
-    if(!req.file) {
-      const { id } = req.params
-      await Post.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    if (!req.file) {
+      const { id } = req.params;
+      await Post.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     } else {
       const { id } = req.params;
       req.body.img = req.file.path;
       const post = await Post.findById(id);
       const cloudinaryImgName = post.imageFileName;
-      if(req.body.imageFileName !== cloudinaryImgName){
+      if (req.body.imageFileName !== cloudinaryImgName) {
         await cloudinary.uploader.destroy(cloudinaryImgName);
       }
       req.body.imageFileName = req.file.filename;
-      await Post.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+      await Post.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     }
-    req.flash('success', 'Post successfully updated')
-    res.redirect('/posts')
+    req.flash('success', 'Post successfully updated');
+    res.redirect('/posts');
+  } catch (err) {
+    console.log(err);
   }
-  catch(err) {
-    console.log(err)
-  }
-})
+});
 
 //Deleting posts
 
 app.delete('/:id', isLoggedIn, isAuthorPost, async (req, res) => {
   try {
-    const {id} = req.params
+    const { id } = req.params;
     const post = await Post.findById(id);
-    if(post.img){
+    if (post.img) {
       const cloudinaryImgName = post.imageFileName;
       await cloudinary.uploader.destroy(cloudinaryImgName);
-      await Post.findByIdAndDelete(id)
+      await Post.findByIdAndDelete(id);
     } else {
-      await Post.findByIdAndDelete(id)
+      await Post.findByIdAndDelete(id);
     }
-    req.flash('success', 'Post successfully deleted')
-    res.redirect('/posts')
+    req.flash('success', 'Post successfully deleted');
+    res.redirect('/posts');
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-})
-
+});
 
 //Profile creation
 
-app.get('/user/createprofile', (req,res) => {
-  res.render('createProfile.ejs')
-})
+app.get('/user/createprofile', (req, res) => {
+  res.render('createProfile.ejs');
+});
 
 app.post('/profiles', isLoggedIn, upload.single('img'), async (req, res) => {
   try {
-    if(!req.file){
-      const user = await User.find({hasProfile: false})
-      if(user.length){
+    if (!req.file) {
+      const user = await User.find({ hasProfile: false });
+      if (user.length) {
         const newProfile = new Profile(req.body);
         newProfile.author = req.user._id;
-        await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
+        await User.findByIdAndUpdate(req.user.id, { hasProfile: true });
         await newProfile.save();
         req.flash('success', 'Profile succefully created');
         res.redirect('/profiles');
       } else {
-        req.flash('error', 'Personal profile already created!')
+        req.flash('error', 'Personal profile already created!');
         res.redirect('/profiles');
       }
     } else {
-      const user = await User.find({hasProfile: false})
-      if(user.length){
+      const user = await User.find({ hasProfile: false });
+      if (user.length) {
         req.body.img = req.file.path;
         req.body.imageFileName = req.file.filename;
         const newProfile = new Profile(req.body);
         newProfile.author = req.user._id;
-        await User.findByIdAndUpdate(req.user.id, { hasProfile: true })
+        await User.findByIdAndUpdate(req.user.id, { hasProfile: true });
         await newProfile.save();
         req.flash('success', 'Profile succefully created');
         res.redirect('/profiles');
       } else {
-        req.flash('error', 'Personal profile already created!')
+        req.flash('error', 'Personal profile already created!');
         res.redirect('/profiles');
       }
     }
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-})
+});
 
 //Show Profile
 
 app.get('/profiles', async (req, res) => {
   const profiles = await Profile.find({}).populate('author');
   res.render('showProfiles.ejs', { profiles });
-})
+});
 
 // update profile
 
-app.get('/updateprofile/:id', async (req, res)=> {
-  try{
-    const {id} = req.params;
+app.get('/updateprofile/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
     const profile = await Profile.findById(id);
     res.render('updateProfile.ejs', { profile });
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-})
+});
 
 app.put('/updateprofile/:id', isLoggedIn, isAuthorProfile, upload.single('img'), async (req, res) => {
   try {
-    if(!req.file) {
-      const { id } = req.params
-      await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    if (!req.file) {
+      const { id } = req.params;
+      await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     } else {
-      const { id } = req.params
+      const { id } = req.params;
       req.body.img = req.file.path;
       const profile = await Profile.findById(id);
       const cloudinaryImgName = profile.imageFileName;
-      if(req.body.imageFileName !== cloudinaryImgName){
+      if (req.body.imageFileName !== cloudinaryImgName) {
         await cloudinary.uploader.destroy(cloudinaryImgName);
       }
       req.body.imageFileName = req.file.filename;
-      await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+      await Profile.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     }
-    req.flash('success', 'Profile successfully updated')
-    res.redirect('/profiles')
+    req.flash('success', 'Profile successfully updated');
+    res.redirect('/profiles');
+  } catch (err) {
+    console.log(err);
   }
-  catch(err) {
-    console.log(err)
-  }
-})
+});
 
 // delete profile
 
 app.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
     const profile = await Profile.findById(id);
-    console.log('profile', profile)
-    if(profile.img) {
-      await User.findByIdAndUpdate(req.user._id, { hasProfile: false })
+    console.log('profile', profile);
+    if (profile.img) {
+      await User.findByIdAndUpdate(req.user._id, { hasProfile: false });
       const cloudinaryImgName = profile.imageFileName;
       await cloudinary.uploader.destroy(cloudinaryImgName);
-      await Profile.findByIdAndDelete(id)
+
+      await Profile.findByIdAndDelete(id);
     } else {
-      await User.findByIdAndUpdate(req.user._id, { hasProfile: false })
-      await Profile.findByIdAndDelete(id)
+      await User.findByIdAndUpdate(req.user._id, { hasProfile: false });
+      await Profile.findByIdAndDelete(id);
     }
-    req.flash('success', 'Profile successfully deleted')
-    res.redirect('/profiles')
+    req.flash('success', 'Profile successfully deleted');
+    res.redirect('/profiles');
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-})
+});
 
 // get user
 
-app.get('/user', (req,res)=>{
-  res.render('user.ejs')
-})
+app.get('/user', (req, res) => {
+  res.render('user.ejs');
+});
 
 // delete user
 
-app.post('/user/:id', isLoggedIn, async (req, res)=>{
+app.post('/user/:id', isLoggedIn, async (req, res) => {
   try {
     const { id } = req.params;
+    await Post.deleteMany({author: id});
+    await Profile.deleteMany({author: id});
     await User.findByIdAndDelete(id);
     res.redirect('/user/register');
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
-})
+});
+
+// search posts
 
 app.get('/posts/search', async (req, res) => {
   try {
-    const {search} = req.query;
-    const searchedPosts = await Post.find({ content: { $regex: search, $options: 'i' }}).exec()
+    const { search } = req.query;
+    const searchedPosts = await Post.find({ content: { $regex: search, $options: 'i' } }).populate('author').exec();
     if (searchedPosts) {
-      res.render('searchPosts.ejs', {searchedPosts})
+      res.render('searchPosts.ejs', { searchedPosts });
+    } else {
+      req.flash('error', 'The post you are searching for does not exist');
+      res.redirect('/posts');
     }
-    else {
-      req.flash('error', 'The post you are searching for does not exist')
-      res.redirect('/posts')
-    }
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-})
+});
 
 app.get('/profiles/search', async (req, res) => {
   try {
     const { search } = req.query;
-    const searchedProfiles = await User.find({ username: { $regex: search, $options: 'i' }}).exec()
+    const searchedProfiles = await User.find({ username: { $regex: search, $options: 'i' } }).exec();
     if (searchedProfiles) {
-      res.render('searchProfiles.ejs', {searchedProfiles})
+      res.render('searchProfiles.ejs', { searchedProfiles });
+    } else {
+      req.flash('error', 'The profile you are searching for does not exist');
+      res.redirect('/posts');
     }
-    else {
-      req.flash('error', 'The profile you are searching for does not exist')
-      res.redirect('/posts')
-    }
+  } catch (err) {
+    console.log(err);
   }
-  catch (err) {
-    console.log(err)
-  }
-})
+});
 
 //update user
 
 app.get('/updateuser/:id', async (req, res) => {
   try {
-    const { id } = req.params
-    const user = await User.findById(id)
-    res.render('updateUser.ejs', {user})
-  }
-  catch (err) {
-    console.log(err)
+    const { id } = req.params;
+    const user = await User.findById(id);
+    res.render('updateUser.ejs', { user });
+  } catch (err) {
+    console.log(err);
   }
 });
 
-app.put('/updateuser/:id',  async (req, res) => {
+app.put('/updateuser/:id', async (req, res) => {
   try {
     const { id } = req.params;
     // const user = await User.findById(id)
     // await user.changePassword(req.body.password, req.body.password)
-    await User.findByIdAndUpdate(id, req.body, { runValidators: true, new: true })
+    await User.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     res.redirect('/user');
   } catch (err) {
-    req.flash('error', 'Update user error, try again!')
+    req.flash('error', 'Update user error, try again!');
     res.redirect('/user/login');
     console.log(err);
-    }
+  }
 });
 
 app.listen(process.env.PORT || 3000, () => console.log('Server Up and running'));
