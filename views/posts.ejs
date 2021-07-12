@@ -21,9 +21,9 @@
           <footer class="blockquote-footer">Created By <cite title="Source Title"><%= post.author.username %></cite></footer>
         </blockquote>
         <% if(currentUser && post.author.equals(currentUser._id)) { %>
-        <form action="/<%= post.id %>?_method=DELETE" method="POST">
+        <form action="/posts/deletepost/<%= post.id %>?_method=DELETE" method="POST">
           <div class="btn-group">
-            <a role="button" href="/updatepost/<%= post.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
+            <a role="button" href="/posts/updatepost/<%= post.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
             <button class="btn btn-outline-danger text-capitalize mb-2" type="submit">Delete</button>
           </div>
         </form>

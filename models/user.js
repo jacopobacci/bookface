@@ -10,8 +10,8 @@ const userSchema = new Schema({
   },
   hasProfile: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 userSchema.plugin(passportLocalMongoose);

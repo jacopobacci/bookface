@@ -2,10 +2,10 @@
 
       <%- include("partials/flash.ejs") %>
       <div class="pt-5 d-flex justify-content-center align-items-center">
-        <form action="/user/<%= currentUser._id %>" method="post">
+        <form action="/user/deleteuser/<%= currentUser._id %>" method="post">
             <button class="btn btn-danger btn-lg shadow me-3" type="submit">Delete User</button>
         </form>
-        <a href="/updateuser/<%= currentUser._id %>" class="btn btn-outline-light btn-lg shadow">Update User Email</a>
+        <a href="/user/updateuser/<%= currentUser._id %>" class="btn btn-outline-light btn-lg shadow">Update User Email</a>
       </div>
 
 <%- include("partials/footer.ejs") %>

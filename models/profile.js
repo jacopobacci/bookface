@@ -4,27 +4,27 @@ const Schema = mongoose.Schema;
 const profileSchema = new Schema({
   firstName: {
     type: String,
-    required: true
+    required: true,
   },
   lastName: {
-      type: String,
-      required: true
+    type: String,
+    required: true,
   },
   phone: {
-      type: String     
+    type: String,
   },
   address: {
-    type: String     
+    type: String,
   },
   birthday: {
-      type: String
+    type: String,
   },
   hobbies: {
-      type: String
+    type: String,
   },
   author: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
   },
   img: {
     type: String,
@@ -33,7 +33,6 @@ const profileSchema = new Schema({
     type: String,
   },
 });
-
 
 const Profile = mongoose.model('Profile', profileSchema);
 

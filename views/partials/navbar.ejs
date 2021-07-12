@@ -43,17 +43,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav justify-content-around" style="width: 100%">
-            <a class="nav-link text-center fw-bold" href="/newpost">New Post</a>
+            <a class="nav-link text-center fw-bold" href="/posts/createpost">New Post</a>
             <a class="nav-link text-center fw-bold" href="/posts">Posts</a>
             <a class="nav-link text-center fw-bold" href="/profiles">Show Profiles</a>
             <% if(!currentUser){ %>
             <a class="nav-link text-center fw-bold" href="/user/register">Register</a>
             <a class="nav-link text-center fw-bold" href="/user/login">Login</a>
             <% } %> <% if(currentUser && hasProfile){ %>
-            <a class="nav-link text-center fw-bold" href="/user/createprofile">Create Profile</a>
+            <a class="nav-link text-center fw-bold" href="/profiles/createprofile">Create Profile</a>
             <% } %> <% if(currentUser){ %>
             <a class="nav-link text-center fw-bold text-capitalize" href="/user"><%= currentUser.username %></a>
-            <a class="nav-link text-center fw-bold text-danger" href="/logout">Logout</a>
+            <a class="nav-link text-center fw-bold text-danger" href="/user/logout">Logout</a>
             <% } %>
           </div>
         </div>
