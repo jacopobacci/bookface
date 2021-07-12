@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const postSchema = new Schema({
   content: {
     type: String,
-    required: true
+    required: true,
   },
   date: {
-    type: String
+    type: String,
   },
   img: {
     type: String,
@@ -17,10 +17,9 @@ const postSchema = new Schema({
   },
   author: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
-
 
 const Post = mongoose.model('Post', postSchema);
 

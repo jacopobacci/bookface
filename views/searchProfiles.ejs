@@ -24,9 +24,9 @@
             </div>
             <div class="card-body">
               <% if(currentUser && profile._id.equals(currentUser._id)) { %> 
-                <form action="/deleteprofile/<%= profile.id %>?_method=DELETE" method="POST">
+                <form action="/profiles/deleteprofile/<%= profile.id %>?_method=DELETE" method="POST">
                 <div class="btn-group">
-                    <a role="button" href="/updateprofile/<%= profile.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
+                    <a role="button" href="/porfiles/updateprofile/<%= profile.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
                       <button type="submit" class="btn btn-outline-danger text-capitalize mb-2">Delete</button>
                   </div>
                 </form>
