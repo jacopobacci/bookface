@@ -18,7 +18,7 @@
       <div class="card-body pb-0">
         <blockquote class="blockquote mb-3">
           <p><%= post.content %></p>
-          <footer class="blockquote-footer">Created By <cite title="Source Title"><%= post.author.username %></cite></footer>
+          <footer class="blockquote-footer">Created By <cite title="Source Title" class="text-capitalize"><%= post.author.username %></cite></footer>
         </blockquote>
         <% if(currentUser && post.author.equals(currentUser._id)) { %>
         <form class="pb-3" action="/posts/deletepost/<%= post.id %>?_method=DELETE" method="POST">
@@ -46,7 +46,7 @@
                   <li class="list-group-item">
                     <div class="d-flex">
                       <span class="border rounded p-2 me-2 flex-grow-1"><%= comment.commentText %> </span>
-                      <span class="border rounded p-2"><span class="text-capitalize"><%= comment.author.username %></span>, <%= comment.date %></span>
+                      <span class="border rounded p-2"><span class="text-capitalize"><%= comment.author.username %></span> <%= comment.date %></span>
                       <% if(currentUser && comment.author.equals(currentUser._id)) { %>
                       <form class="d-flex flex-column justify-content-center align-items-center" action="/posts/<%= post._id %>/comments/<%= comment._id %>?_method=DELETE" method="post">
                       <button class="btn btn-danger btn-sm ms-2">Delete</button>
