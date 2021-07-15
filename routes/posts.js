@@ -116,7 +116,7 @@ router.get('/search', async (req, res) => {
     })
       .populate('author')
       .exec();
-    if (searchedPosts) {
+    if (searchedPosts.length) {
       res.render('searchPosts.ejs', { searchedPosts });
     } else {
       req.flash('error', 'The post you are searching for does not exist');

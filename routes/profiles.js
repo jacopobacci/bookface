@@ -109,12 +109,14 @@ router.delete('/deleteprofile/:id', isLoggedIn, isAuthorProfile, async (req, res
 router.get('/search', async (req, res) => {
   try {
     const { search } = req.query;
-    const searchedProfiles = await User.find({ username: { $regex: search, $options: 'i' } }).exec();
-    if (searchedProfiles) {
+    const searchedProfiles = await Profile.find({ firstName: { $regex: search, $options: 'i' } })
+      .populate('author')
+      .exec();
+    if (searchedProfiles.length) {
       res.render('searchProfiles.ejs', { searchedProfiles });
     } else {
       req.flash('error', 'The profile you are searching for does not exist');
-      res.redirect('/posts');
+      res.redirect('/profiles');
     }
   } catch (err) {
     console.log(err);
