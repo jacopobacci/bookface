@@ -5,6 +5,7 @@ const passport = require('passport');
 const User = require('../models/user');
 const Profile = require('../models/profile');
 const Post = require('../models/post');
+const Comment = require('../models/comment');
 
 router.get('/register', (req, res) => {
   res.render('register.ejs');
@@ -37,7 +38,7 @@ router.get('/login', (req, res) => {
 router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/user/login' }), (req, res) => {
   try {
     req.flash('success', 'Successfully logged in!');
-    const redirectUrl = req.session.returnTo || '/';
+    const redirectUrl = req.session.returnTo || '/posts';
     delete req.session.returnTo;
     res.redirect(redirectUrl);
   } catch {
@@ -74,6 +75,7 @@ router.post('/deleteuser/:id', isLoggedIn, async (req, res) => {
     }
     if (profile) await Profile.deleteMany({ author: id });
     if (posts) await Post.deleteMany({ author: id });
+    if (posts) await Comment.deleteMany({ author: id });
     await User.findByIdAndDelete(id);
     res.redirect('/user/register');
   } catch (err) {

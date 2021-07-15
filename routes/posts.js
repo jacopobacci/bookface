@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { isLoggedIn, isAuthorPost } = require('../middleware');
+const { isLoggedIn, isAuthorPost, isAuthorReview } = require('../middleware');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
 const upload = multer({ storage });
 const { cloudinary } = require('../cloudinary');
 const Post = require('../models/post');
+const Comment = require('../models/comment');
 
 const today = new Date();
 const dd = String(today.getDate()).padStart(2, '0');
@@ -14,7 +15,14 @@ const yyyy = today.getFullYear();
 const now = `${dd}/${mm}/${yyyy}`;
 
 router.get('/', async (req, res) => {
-  const posts = await Post.find({}).populate('author');
+  const posts = await Post.find({})
+    .populate({
+      path: 'comments',
+      populate: {
+        path: 'author',
+      },
+    })
+    .populate('author');
   res.render('posts.ejs', { posts });
 });
 
@@ -116,6 +124,28 @@ router.get('/search', async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+});
+
+// COMMENTS
+
+router.post('/:id/comments', isLoggedIn, async (req, res) => {
+  const { id } = req.params;
+  const post = await Post.findById(id);
+  const comment = new Comment({ ...req.body, date: now });
+  comment.author = req.user._id;
+  post.comments.push(comment);
+  await comment.save();
+  await post.save();
+  req.flash('success', 'Comment succesfully created');
+  res.redirect('/posts');
+});
+
+router.delete('/:id/comments/:commentId', isLoggedIn, isAuthorReview, async (req, res) => {
+  const { id, commentId } = req.params;
+  await Post.findByIdAndUpdate(id, { $pull: { comments: commentId } });
+  await Comment.findByIdAndDelete(commentId);
+  req.flash('success', 'Comment succesfully deleted');
+  res.redirect('/posts');
 });
 
 module.exports = router;

@@ -15,20 +15,49 @@
           <img src="<%= post.img %>" class="card-img-top rounded post-img" alt="...">
         </div>
       <% } %> 
-      <div class="card-body">
+      <div class="card-body pb-0">
         <blockquote class="blockquote mb-3">
           <p><%= post.content %></p>
           <footer class="blockquote-footer">Created By <cite title="Source Title"><%= post.author.username %></cite></footer>
         </blockquote>
         <% if(currentUser && post.author.equals(currentUser._id)) { %>
-        <form action="/posts/deletepost/<%= post.id %>?_method=DELETE" method="POST">
+        <form class="pb-3" action="/posts/deletepost/<%= post.id %>?_method=DELETE" method="POST">
           <div class="btn-group">
-            <a role="button" href="/posts/updatepost/<%= post.id %>" class="btn btn-outline-dark text-capitalize mb-2">Update</a>
-            <button class="btn btn-outline-danger text-capitalize mb-2" type="submit">Delete</button>
+            <a role="button" href="/posts/updatepost/<%= post.id %>" class="btn btn-outline-dark text-capitalize">Update</a>
+            <button class="btn btn-outline-danger text-capitalize" type="submit">Delete</button>
           </div>
         </form>
         <% } %>
       </div>
+        <div class="card-body pt-0">
+          <% if(currentUser){ %>
+          <form action="/posts/<%= post._id %>/comments" method="POST">
+            <label class="form-label" for="commentText">Comment this post</label>
+            <textarea class="form-control mb-3" name="commentText" id="commentText" cols="30" rows="2" required></textarea>
+            <button class="btn btn-success mb-3">Submit</button>
+          </form>
+        <% } %>
+          <% if(post.comments.length){ %> 
+            <div class="card-header">
+              Comments
+            </div>
+            <ul class="list-group list-group-flush">
+                <% post.comments.forEach(comment =>{ %>
+                  <li class="list-group-item">
+                    <div class="d-flex">
+                      <span class="border rounded p-2 me-2 flex-grow-1"><%= comment.commentText %> </span>
+                      <span class="border rounded p-2"><span class="text-capitalize"><%= comment.author.username %></span>, <%= comment.date %></span>
+                      <% if(currentUser && comment.author.equals(currentUser._id)) { %>
+                      <form class="d-flex flex-column justify-content-center align-items-center" action="/posts/<%= post._id %>/comments/<%= comment._id %>?_method=DELETE" method="post">
+                      <button class="btn btn-danger btn-sm ms-2">Delete</button>
+                      </form>
+                      <% } %> 
+                    </div>
+                  </li>
+                <% }) %> 
+            </ul>
+            <% } %> 
+        </div>
       <div class="card-footer text-muted"><%= post.date %></div>
     </div>
   </div>
