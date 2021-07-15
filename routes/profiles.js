@@ -15,8 +15,8 @@ router.get('/createprofile', (req, res) => {
 router.post('/createprofile', isLoggedIn, upload.single('img'), async (req, res) => {
   try {
     if (!req.file) {
-      const user = await User.find({ hasProfile: false });
-      if (user.length) {
+      const user = await User.findOne({ hasProfile: false, _id: req.user._id });
+      if (user) {
         const newProfile = new Profile(req.body);
         newProfile.author = req.user._id;
         await User.findByIdAndUpdate(req.user.id, { hasProfile: true });
@@ -28,8 +28,8 @@ router.post('/createprofile', isLoggedIn, upload.single('img'), async (req, res)
         res.redirect('/profiles');
       }
     } else {
-      const user = await User.find({ hasProfile: false });
-      if (user.length) {
+      const user = await User.findOne({ hasProfile: false, _id: req.user._id });
+      if (user) {
         req.body.img = req.file.path;
         req.body.imageFileName = req.file.filename;
         const newProfile = new Profile(req.body);

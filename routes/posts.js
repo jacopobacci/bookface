@@ -22,7 +22,8 @@ router.get('/', async (req, res) => {
         path: 'author',
       },
     })
-    .populate('author');
+    .populate('author')
+    .exec();
   res.render('posts.ejs', { posts });
 });
 
