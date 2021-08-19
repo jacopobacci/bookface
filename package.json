@@ -36,7 +36,8 @@
   },
   "devDependencies": {
     "node-sass": "^6.0.0",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.12",
+    "sass": "^1.36.0"
   },
   "engines": {
     "node": "v14.15.4"

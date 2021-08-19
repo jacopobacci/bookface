@@ -62,7 +62,6 @@ app.use(async (req, res, next) => {
     const user = await User.findOne({ hasProfile: false, _id: req.user._id });
     res.locals.hasProfile = user;
   }
-
   res.locals.currentUser = req.user;
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
